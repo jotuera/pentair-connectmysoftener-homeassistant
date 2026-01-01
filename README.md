@@ -1,7 +1,7 @@
-Erie Water Treatment IQSoft Home Assistant Integration 
+Pentair ConnectMySoftener app Home Assistant Integration 
 =========================================================
 
-Erie Connect IQSoft experimental integration for Home Assistant (mainly for my own use and experiments).
+Pentair ConnectMySoftener app experimental integration for Home Assistant (mainly for my own use and experiments).
 No support is given.
 
 Integration works by polling Erie Connect API every 90 seconds. It uses API client from this repo:
