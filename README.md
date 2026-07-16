@@ -92,6 +92,104 @@ matching the app's Day / Week / Month / Year view:
 > or build daily/monthly counters with a `utility_meter` helper. The optional sensors
 > above are only needed if you want the exact numbers the app shows.
 
+## Dashboard examples
+
+> Entity IDs below assume the default device name **Pentair Softener**
+> (`sensor.pentair_softener_…`). If your account profile has a custom device name
+> (e.g. *Supreme Soft20*), Home Assistant will slug it instead
+> (`sensor.supreme_soft20_…`) — adjust the entity IDs to match.
+
+### Info card
+
+```yaml
+type: entities
+entities:
+  - entity: sensor.pentair_softener_warnings
+    name: Warnings
+  - entity: sensor.pentair_softener_total_volume
+    name: Total water consumption
+    icon: mdi:water
+  - entity: sensor.pentair_softener_last_regeneration
+    name: Last regeneration
+    icon: mdi:calendar-clock
+  - entity: sensor.pentair_softener_regeneration_count
+    name: Regenerations count
+    icon: mdi:recycle
+  - entity: sensor.pentair_softener_last_maintenance
+    name: Last service
+    icon: mdi:calendar-clock
+  - entity: sensor.pentair_softener_days_remaining
+    name: Days until capacity exhausted
+    icon: mdi:calendar-clock
+```
+
+### Daily water consumption (last 7 days)
+
+Uses [`mini-graph-card`](https://github.com/kalkih/mini-graph-card) (install via HACS
+frontend) fed by the cumulative `Total volume` sensor — `aggregate_func: sum` with
+`group_by: date` turns the running total into daily bars, the same trick used for the
+HA energy dashboard.
+
+```yaml
+type: custom:mini-graph-card
+entities:
+  - entity: sensor.pentair_softener_total_volume
+    icon: mdi:water
+    aggregate_func: sum
+    name: Water consumption
+name: Daily water consumption (last 7 days)
+hours_to_show: 168
+group_by: date
+show:
+  graph: bar
+  labels: true
+color_thresholds:
+  - value: 0
+    color: "#f5fdff"
+  - value: 1
+    color: "#3295a8"
+```
+
+### Water consumption (last 24 hours)
+
+Same card, grouped by hour instead of day:
+
+```yaml
+type: custom:mini-graph-card
+entities:
+  - entity: sensor.pentair_softener_total_volume
+    aggregate_func: sum
+    name: Water consumption
+name: Last 24 hours water consumption
+hours_to_show: 24
+group_by: hour
+hour24: true
+show:
+  graph: bar
+  labels: true
+color_thresholds:
+  - value: 0
+    color: "#f5fdff"
+  - value: 1
+    color: "#3295a8"
+```
+
+## Automation example
+
+### Notify when the salt level is low
+
+```yaml
+alias: Low salt level in water softener
+trigger:
+  - platform: state
+    entity_id: binary_sensor.pentair_softener_salt_warning
+    to: "on"
+action:
+  - service: notify.mobile_app_your_phone  # replace with your notify target
+    data:
+      message: "🧂 Low salt level in water softener"
+```
+
 ## Installation
 
 ### HACS (recommended)
@@ -122,11 +220,12 @@ Entity translations are taken directly from the official app's language files wh
 
 ## Icon in the UI
 
-The bundled `icon.png` / `logo.png` are the app logo. Home Assistant loads integration
-logos from [home-assistant/brands](https://github.com/home-assistant/brands)
-(`brands.home-assistant.io/_/pentair_softener/`), **not** from this folder — so to make the
-logo appear in the UI, the images need to be submitted to that repository under
-`custom_integrations/pentair_softener/`.
+Since Home Assistant 2026.3.0, the icon is bundled locally in
+`custom_components/pentair_softener/brand/` (`icon.png` / `icon@2x.png`) and is picked
+up automatically — no extra configuration needed, and no submission to
+[home-assistant/brands](https://github.com/home-assistant/brands) is required (that repo
+no longer accepts icons for custom integrations, see the
+[announcement](https://developers.home-assistant.io/blog/2026/02/24/brands-proxy-api)).
 
 ## Credits
 
