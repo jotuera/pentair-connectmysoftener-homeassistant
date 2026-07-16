@@ -1,0 +1,111 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Pentair ConnectMySoftener",
+        "description": "Войдите с помощью учётной записи приложения ConnectMySoftener.",
+        "data": {
+          "email": "Эл. почта",
+          "password": "Пароль"
+        }
+      }
+    },
+    "error": {
+      "auth_failed": "Неверный адрес эл. почты или пароль.",
+      "cannot_connect": "Не удалось подключиться к API Pentair (нет устройства в аккаунте или ошибка сервера).",
+      "unknown": "Непредвиденная ошибка."
+    },
+    "abort": {
+      "already_configured": "Эта учётная запись уже настроена."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "description": "Дополнительные необязательные данные из облачного API.",
+        "data": {
+          "enable_graphs": "Загружать историю расхода воды через API (доп. запросы)"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "current_flow": {
+        "name": "Текущий расход"
+      },
+      "remaining_capacity": {
+        "name": "Доступную емкость устройства"
+      },
+      "days_remaining": {
+        "name": "Количество оставшихся дней"
+      },
+      "water_hardness": {
+        "name": "Жесткость"
+      },
+      "total_volume": {
+        "name": "Общий объем"
+      },
+      "regeneration_count": {
+        "name": "Количество регенераций"
+      },
+      "last_regeneration": {
+        "name": "Последняя регенерация"
+      },
+      "last_maintenance": {
+        "name": "Последнее техническое обслуживание"
+      },
+      "software_version": {
+        "name": "Версия программного обеспечения"
+      },
+      "serial_number": {
+        "name": "Серийный номер"
+      },
+      "status": {
+        "name": "Статус"
+      },
+      "status_progress": {
+        "name": "Прогресс"
+      },
+      "warnings": {
+        "name": "Предупреждения"
+      },
+      "water_used_day": {
+        "name": "Расход воды сегодня"
+      },
+      "water_used_week": {
+        "name": "Расход воды за неделю"
+      },
+      "water_used_month": {
+        "name": "Расход воды за месяц"
+      },
+      "water_used_year": {
+        "name": "Расход воды за год"
+      }
+    },
+    "binary_sensor": {
+      "salt_warning": {
+        "name": "Предупреждение о соли"
+      },
+      "online": {
+        "name": "В сети"
+      }
+    },
+    "button": {
+      "salt_added": {
+        "name": "Соль добавлена"
+      },
+      "regenerate_now": {
+        "name": "Регенерировать сейчас"
+      },
+      "regenerate_scheduled": {
+        "name": "Регенерировать по расписанию"
+      }
+    },
+    "number": {
+      "holiday_mode": {
+        "name": "Режим отпуска"
+      }
+    }
+  }
+}

@@ -1,0 +1,111 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Pentair ConnectMySoftener",
+        "description": "Log in met je ConnectMySoftener-app-account.",
+        "data": {
+          "email": "E-mail",
+          "password": "Wachtwoord"
+        }
+      }
+    },
+    "error": {
+      "auth_failed": "Ongeldig e-mailadres of wachtwoord.",
+      "cannot_connect": "Kan geen verbinding maken met de Pentair-API (geen apparaat op het account of serverfout).",
+      "unknown": "Onverwachte fout."
+    },
+    "abort": {
+      "already_configured": "Dit account is al geconfigureerd."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "description": "Optionele extra gegevens uit de cloud-API.",
+        "data": {
+          "enable_graphs": "Waterverbruiksgeschiedenis via de API ophalen (extra verzoeken)"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "current_flow": {
+        "name": "Huidige debiet"
+      },
+      "remaining_capacity": {
+        "name": "Resterende capaciteit van toestel"
+      },
+      "days_remaining": {
+        "name": "Aantal dagen resterend"
+      },
+      "water_hardness": {
+        "name": "Hardheid"
+      },
+      "total_volume": {
+        "name": "Totaal volume"
+      },
+      "regeneration_count": {
+        "name": "Aantal regeneraties"
+      },
+      "last_regeneration": {
+        "name": "Laatste regeneratie"
+      },
+      "last_maintenance": {
+        "name": "Laatste onderhoud"
+      },
+      "software_version": {
+        "name": "Softwareversie"
+      },
+      "serial_number": {
+        "name": "Serie Nummer"
+      },
+      "status": {
+        "name": "Status"
+      },
+      "status_progress": {
+        "name": "Voortgang"
+      },
+      "warnings": {
+        "name": "Waarschuwingen"
+      },
+      "water_used_day": {
+        "name": "Waterverbruik vandaag"
+      },
+      "water_used_week": {
+        "name": "Waterverbruik deze week"
+      },
+      "water_used_month": {
+        "name": "Waterverbruik deze maand"
+      },
+      "water_used_year": {
+        "name": "Waterverbruik dit jaar"
+      }
+    },
+    "binary_sensor": {
+      "salt_warning": {
+        "name": "Zoutalarm"
+      },
+      "online": {
+        "name": "Online"
+      }
+    },
+    "button": {
+      "salt_added": {
+        "name": "Zout toegevoegd"
+      },
+      "regenerate_now": {
+        "name": "Nu regenereren"
+      },
+      "regenerate_scheduled": {
+        "name": "Regenereren op gepland tijdstip"
+      }
+    },
+    "number": {
+      "holiday_mode": {
+        "name": "Vakantiemodus"
+      }
+    }
+  }
+}

@@ -1,0 +1,111 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Pentair ConnectMySoftener",
+        "description": "Inicia sesión con tu cuenta de la aplicación ConnectMySoftener.",
+        "data": {
+          "email": "Correo electrónico",
+          "password": "Contraseña"
+        }
+      }
+    },
+    "error": {
+      "auth_failed": "Correo electrónico o contraseña no válidos.",
+      "cannot_connect": "No se pudo conectar con la API de Pentair (sin dispositivo en la cuenta o error del servidor).",
+      "unknown": "Error inesperado."
+    },
+    "abort": {
+      "already_configured": "Esta cuenta ya está configurada."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "description": "Datos adicionales opcionales obtenidos de la API en la nube.",
+        "data": {
+          "enable_graphs": "Obtener el historial de consumo de agua desde la API (peticiones adicionales)"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "current_flow": {
+        "name": "Caudal actual"
+      },
+      "remaining_capacity": {
+        "name": "Capacidad restante del equipo"
+      },
+      "days_remaining": {
+        "name": "Cantidad de días restantes"
+      },
+      "water_hardness": {
+        "name": "Dureza"
+      },
+      "total_volume": {
+        "name": "Volumen total"
+      },
+      "regeneration_count": {
+        "name": "Número de regeneraciones"
+      },
+      "last_regeneration": {
+        "name": "Última regeneración"
+      },
+      "last_maintenance": {
+        "name": "Último mantenimiento"
+      },
+      "software_version": {
+        "name": "Versión del software"
+      },
+      "serial_number": {
+        "name": "Número de serie"
+      },
+      "status": {
+        "name": "Estado"
+      },
+      "status_progress": {
+        "name": "Progreso"
+      },
+      "warnings": {
+        "name": "Advertencias"
+      },
+      "water_used_day": {
+        "name": "Agua consumida hoy"
+      },
+      "water_used_week": {
+        "name": "Agua consumida esta semana"
+      },
+      "water_used_month": {
+        "name": "Agua consumida este mes"
+      },
+      "water_used_year": {
+        "name": "Agua consumida este año"
+      }
+    },
+    "binary_sensor": {
+      "salt_warning": {
+        "name": "Alarma de sal"
+      },
+      "online": {
+        "name": "En línea"
+      }
+    },
+    "button": {
+      "salt_added": {
+        "name": "Sal añadida"
+      },
+      "regenerate_now": {
+        "name": "Regenerar ahora"
+      },
+      "regenerate_scheduled": {
+        "name": "Regenerar a la hora programada"
+      }
+    },
+    "number": {
+      "holiday_mode": {
+        "name": "Modo de vacaciones"
+      }
+    }
+  }
+}

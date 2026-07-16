@@ -1,0 +1,111 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Pentair ConnectMySoftener",
+        "description": "Sign in with your ConnectMySoftener app account.",
+        "data": {
+          "email": "E-mail",
+          "password": "Password"
+        }
+      }
+    },
+    "error": {
+      "auth_failed": "Invalid e-mail or password.",
+      "cannot_connect": "Could not connect to the Pentair API (no device on the account or server error).",
+      "unknown": "Unexpected error."
+    },
+    "abort": {
+      "already_configured": "This account is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "description": "Optional extra data pulled from the cloud API.",
+        "data": {
+          "enable_graphs": "Fetch water usage history from the API (extra requests)"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "current_flow": {
+        "name": "Current Flow"
+      },
+      "remaining_capacity": {
+        "name": "Remaining Appliance Capacity"
+      },
+      "days_remaining": {
+        "name": "Remaining days"
+      },
+      "water_hardness": {
+        "name": "Hardness"
+      },
+      "total_volume": {
+        "name": "Total Volume"
+      },
+      "regeneration_count": {
+        "name": "Number of regenerations"
+      },
+      "last_regeneration": {
+        "name": "Last regeneration"
+      },
+      "last_maintenance": {
+        "name": "Last maintenance"
+      },
+      "software_version": {
+        "name": "Software version"
+      },
+      "serial_number": {
+        "name": "Serial Number"
+      },
+      "status": {
+        "name": "Status"
+      },
+      "status_progress": {
+        "name": "Status progress"
+      },
+      "warnings": {
+        "name": "Warnings"
+      },
+      "water_used_day": {
+        "name": "Water used today"
+      },
+      "water_used_week": {
+        "name": "Water used this week"
+      },
+      "water_used_month": {
+        "name": "Water used this month"
+      },
+      "water_used_year": {
+        "name": "Water used this year"
+      }
+    },
+    "binary_sensor": {
+      "salt_warning": {
+        "name": "Salt alarm"
+      },
+      "online": {
+        "name": "Online"
+      }
+    },
+    "button": {
+      "salt_added": {
+        "name": "Salt added"
+      },
+      "regenerate_now": {
+        "name": "Regenerate now"
+      },
+      "regenerate_scheduled": {
+        "name": "Regenerate at scheduled time"
+      }
+    },
+    "number": {
+      "holiday_mode": {
+        "name": "Holiday Mode"
+      }
+    }
+  }
+}

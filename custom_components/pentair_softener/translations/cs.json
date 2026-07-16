@@ -1,0 +1,111 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Pentair ConnectMySoftener",
+        "description": "Přihlaste se účtem z aplikace ConnectMySoftener.",
+        "data": {
+          "email": "E-mail",
+          "password": "Heslo"
+        }
+      }
+    },
+    "error": {
+      "auth_failed": "Neplatný e-mail nebo heslo.",
+      "cannot_connect": "Nepodařilo se připojit k API Pentair (žádné zařízení na účtu nebo chyba serveru).",
+      "unknown": "Neočekávaná chyba."
+    },
+    "abort": {
+      "already_configured": "Tento účet je již nakonfigurován."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "description": "Volitelná další data z cloudového API.",
+        "data": {
+          "enable_graphs": "Načítat historii spotřeby vody z API (další požadavky)"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "current_flow": {
+        "name": "Aktuální tok"
+      },
+      "remaining_capacity": {
+        "name": "Zbývající kapacita spotřebiče"
+      },
+      "days_remaining": {
+        "name": "Počet zbývajících dní"
+      },
+      "water_hardness": {
+        "name": "Tvrdost"
+      },
+      "total_volume": {
+        "name": "Celkový objem"
+      },
+      "regeneration_count": {
+        "name": "Počet regenerací"
+      },
+      "last_regeneration": {
+        "name": "Poslední regenerace"
+      },
+      "last_maintenance": {
+        "name": "Poslední údržba"
+      },
+      "software_version": {
+        "name": "Verze softwaru"
+      },
+      "serial_number": {
+        "name": "Sériové číslo"
+      },
+      "status": {
+        "name": "Stav"
+      },
+      "status_progress": {
+        "name": "Průběh"
+      },
+      "warnings": {
+        "name": "Varování"
+      },
+      "water_used_day": {
+        "name": "Spotřeba vody dnes"
+      },
+      "water_used_week": {
+        "name": "Spotřeba vody tento týden"
+      },
+      "water_used_month": {
+        "name": "Spotřeba vody tento měsíc"
+      },
+      "water_used_year": {
+        "name": "Spotřeba vody tento rok"
+      }
+    },
+    "binary_sensor": {
+      "salt_warning": {
+        "name": "Výstraha soli"
+      },
+      "online": {
+        "name": "Online"
+      }
+    },
+    "button": {
+      "salt_added": {
+        "name": "Sůl přidána"
+      },
+      "regenerate_now": {
+        "name": "Regenerovat nyní"
+      },
+      "regenerate_scheduled": {
+        "name": "Regenerovat v naplánovaném čase"
+      }
+    },
+    "number": {
+      "holiday_mode": {
+        "name": "Režim dovolené"
+      }
+    }
+  }
+}

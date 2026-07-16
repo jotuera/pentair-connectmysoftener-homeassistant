@@ -1,0 +1,16 @@
+{
+  "domain": "pentair_softener",
+  "name": "Pentair ConnectMySoftener",
+  "version": "0.6.0",
+  "documentation": "https://github.com/jotuera/pentair-connectmysoftener-homeassistant",
+  "issue_tracker": "https://github.com/jotuera/pentair-connectmysoftener-homeassistant/issues",
+  "requirements": [],
+  "codeowners": [
+    "@jotuera"
+  ],
+  "iot_class": "cloud_polling",
+  "config_flow": true,
+  "loggers": [
+    "custom_components.pentair_softener"
+  ]
+}

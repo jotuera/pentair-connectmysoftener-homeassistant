@@ -1,0 +1,111 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Pentair ConnectMySoftener",
+        "description": "Autentifică-te cu contul tău din aplicația ConnectMySoftener.",
+        "data": {
+          "email": "E-mail",
+          "password": "Parolă"
+        }
+      }
+    },
+    "error": {
+      "auth_failed": "E-mail sau parolă incorectă.",
+      "cannot_connect": "Conectarea la API-ul Pentair a eșuat (niciun dispozitiv în cont sau eroare de server).",
+      "unknown": "Eroare neașteptată."
+    },
+    "abort": {
+      "already_configured": "Acest cont este deja configurat."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "description": "Date suplimentare opționale preluate din API-ul cloud.",
+        "data": {
+          "enable_graphs": "Preia istoricul consumului de apă din API (cereri suplimentare)"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "current_flow": {
+        "name": "Debitul curent"
+      },
+      "remaining_capacity": {
+        "name": "Capacitatea rămasă a aparatului"
+      },
+      "days_remaining": {
+        "name": "Numărul de zile rămase"
+      },
+      "water_hardness": {
+        "name": "Duritate"
+      },
+      "total_volume": {
+        "name": "Volum total"
+      },
+      "regeneration_count": {
+        "name": "Număr de regenerări"
+      },
+      "last_regeneration": {
+        "name": "Ultima regenerare"
+      },
+      "last_maintenance": {
+        "name": "Ultima întreținere"
+      },
+      "software_version": {
+        "name": "Versiune software"
+      },
+      "serial_number": {
+        "name": "Serie"
+      },
+      "status": {
+        "name": "Stare"
+      },
+      "status_progress": {
+        "name": "Progres"
+      },
+      "warnings": {
+        "name": "Avertizări"
+      },
+      "water_used_day": {
+        "name": "Apă consumată azi"
+      },
+      "water_used_week": {
+        "name": "Apă consumată această săptămână"
+      },
+      "water_used_month": {
+        "name": "Apă consumată această lună"
+      },
+      "water_used_year": {
+        "name": "Apă consumată acest an"
+      }
+    },
+    "binary_sensor": {
+      "salt_warning": {
+        "name": "Alarmă sare"
+      },
+      "online": {
+        "name": "Online"
+      }
+    },
+    "button": {
+      "salt_added": {
+        "name": "Sarea a fost adăugată"
+      },
+      "regenerate_now": {
+        "name": "Regenerează acum"
+      },
+      "regenerate_scheduled": {
+        "name": "Regenerează la ora programată"
+      }
+    },
+    "number": {
+      "holiday_mode": {
+        "name": "Mod vacanță"
+      }
+    }
+  }
+}
