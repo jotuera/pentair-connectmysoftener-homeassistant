@@ -2,12 +2,13 @@ from __future__ import annotations
 
 from typing import Any
 
-from homeassistant.components.button import ButtonEntity
+from homeassistant.components.button import ENTITY_ID_FORMAT, ButtonEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
+from .helpers import build_entity_id
 from .const import DOMAIN, REGEN_NOW, REGEN_AT_SCHEDULED
 
 
@@ -39,6 +40,9 @@ class PentairBaseButton(CoordinatorEntity, ButtonEntity):
         super().__init__(coordinator)
         self._entry = entry
         self._api = api
+        self.entity_id = build_entity_id(
+            ENTITY_ID_FORMAT, coordinator, api, self.translation_key
+        )
 
     @property
     def _dashboard(self) -> dict[str, Any]:

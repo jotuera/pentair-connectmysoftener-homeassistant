@@ -5,6 +5,7 @@ from datetime import datetime
 from typing import Any
 
 from homeassistant.components.sensor import (
+    ENTITY_ID_FORMAT,
     SensorEntity,
     SensorDeviceClass,
     SensorStateClass,
@@ -12,10 +13,12 @@ from homeassistant.components.sensor import (
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity import async_generate_entity_id
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.util import dt as dt_util
 
+from .helpers import build_entity_id
 from .const import (
     DOMAIN,
     STATUS_CODES,
@@ -124,6 +127,9 @@ class PentairBaseSensor(CoordinatorEntity, SensorEntity):
         super().__init__(coordinator)
         self._entry = entry
         self._api = api
+        self.entity_id = build_entity_id(
+            ENTITY_ID_FORMAT, coordinator, api, self.translation_key
+        )
 
     @property
     def _dashboard(self) -> dict[str, Any]:
@@ -458,9 +464,10 @@ class PentairWaterUsageSensor(PentairBaseSensor):
     _attr_suggested_display_precision = 0
 
     def __init__(self, coordinator, entry: ConfigEntry, api, interval: str) -> None:
-        super().__init__(coordinator, entry, api)
         self._interval = interval
+        # Musi być ustawione przed super(), bo baza buduje z tego entity_id.
         self._attr_translation_key = f"water_used_{interval}"
+        super().__init__(coordinator, entry, api)
 
     @property
     def unique_id(self) -> str:

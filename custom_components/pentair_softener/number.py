@@ -2,12 +2,17 @@ from __future__ import annotations
 
 from typing import Any
 
-from homeassistant.components.number import NumberEntity, NumberMode
+from homeassistant.components.number import (
+    ENTITY_ID_FORMAT,
+    NumberEntity,
+    NumberMode,
+)
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
+from .helpers import build_entity_id
 from .const import DOMAIN, HOLIDAY_MODE_MAX_DAYS, HARDNESS_MIN, HARDNESS_MAX
 
 
@@ -40,6 +45,9 @@ class PentairBaseNumber(CoordinatorEntity, NumberEntity):
         super().__init__(coordinator)
         self._entry = entry
         self._api = api
+        self.entity_id = build_entity_id(
+            ENTITY_ID_FORMAT, coordinator, api, self.translation_key
+        )
 
     @property
     def _dashboard(self) -> dict[str, Any]:

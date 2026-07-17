@@ -4,12 +4,13 @@ from datetime import datetime, time
 import logging
 from typing import Any
 
-from homeassistant.components.time import TimeEntity
+from homeassistant.components.time import ENTITY_ID_FORMAT, TimeEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
+from .helpers import build_entity_id
 from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
@@ -55,6 +56,9 @@ class PentairSystemTime(CoordinatorEntity, TimeEntity):
         super().__init__(coordinator)
         self._entry = entry
         self._api = api
+        self.entity_id = build_entity_id(
+            ENTITY_ID_FORMAT, coordinator, api, self.translation_key
+        )
 
     @property
     def _info(self) -> dict[str, Any]:
