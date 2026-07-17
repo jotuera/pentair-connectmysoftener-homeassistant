@@ -62,7 +62,14 @@
         "name": "Seriennummer"
       },
       "status": {
-        "name": "Status"
+        "name": "Status",
+        "state": {
+          "in_service": "In Betrieb",
+          "regenerating": "Regeneriert",
+          "holiday": "Urlaub",
+          "standby": "Standby",
+          "offline": "Offline"
+        }
       },
       "status_progress": {
         "name": "Fortschritt"

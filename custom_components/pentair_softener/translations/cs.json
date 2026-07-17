@@ -62,7 +62,14 @@
         "name": "Sériové číslo"
       },
       "status": {
-        "name": "Stav"
+        "name": "Stav",
+        "state": {
+          "in_service": "V provozu",
+          "regenerating": "Regenerace",
+          "holiday": "Dovolená",
+          "standby": "Pohotovost",
+          "offline": "Offline"
+        }
       },
       "status_progress": {
         "name": "Průběh"

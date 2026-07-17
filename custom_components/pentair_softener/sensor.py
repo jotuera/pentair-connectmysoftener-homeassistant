@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+from datetime import datetime
 from typing import Any
 
 from homeassistant.components.sensor import (
@@ -13,6 +14,7 @@ from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from homeassistant.util import dt as dt_util
 
 from .const import (
     DOMAIN,
@@ -37,6 +39,43 @@ def _first_float(value: Any) -> float | None:
         return float(match.group(0).replace(",", "."))
     except ValueError:
         return None
+
+
+def _to_int(value: Any) -> int | None:
+    """Jak _first_float, ale zaokrąglone do pełnej liczby całkowitej."""
+    number = _first_float(value)
+    return int(round(number)) if number is not None else None
+
+
+def _to_datetime(value: Any) -> datetime | None:
+    """Parsuj datę z API na tz-aware datetime (dla device_class timestamp)."""
+    if value in (None, ""):
+        return None
+    if isinstance(value, (int, float)):
+        try:
+            return dt_util.utc_from_timestamp(float(value))
+        except (ValueError, OSError, OverflowError):
+            return None
+    text = str(value).strip().replace(" @ ", " ")
+    parsed = dt_util.parse_datetime(text)
+    if parsed is None:
+        for fmt in (
+            "%d/%m/%Y %H:%M:%S",
+            "%d/%m/%Y %H:%M",
+            "%Y-%m-%d %H:%M:%S",
+            "%Y-%m-%d %H:%M",
+            "%d-%m-%Y %H:%M:%S",
+        ):
+            try:
+                parsed = datetime.strptime(text, fmt)
+                break
+            except ValueError:
+                continue
+    if parsed is None:
+        return None
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=dt_util.DEFAULT_TIME_ZONE)
+    return parsed
 
 
 async def async_setup_entry(
@@ -134,6 +173,8 @@ class PentairStatusSensor(PentairBaseSensor):
 
     _attr_translation_key = "status"
     _attr_icon = "mdi:water-sync"
+    _attr_device_class = SensorDeviceClass.ENUM
+    _attr_options = list(STATUS_CODES.values())
 
     @property
     def unique_id(self) -> str:
@@ -144,7 +185,8 @@ class PentairStatusSensor(PentairBaseSensor):
         code = self._status.get("code")
         if code is None:
             return None
-        return STATUS_CODES.get(code, "unknown")
+        # Zwróć maszynową nazwę stanu; None gdy kod nieznany (poza enum options).
+        return STATUS_CODES.get(code)
 
     @property
     def extra_state_attributes(self) -> dict[str, Any]:
@@ -163,14 +205,15 @@ class PentairStatusProgressSensor(PentairBaseSensor):
     _attr_translation_key = "status_progress"
     _attr_native_unit_of_measurement = "%"
     _attr_icon = "mdi:gauge"
+    _attr_suggested_display_precision = 0
 
     @property
     def unique_id(self) -> str:
         return f"{self._entry.entry_id}_regeneration_progress"
 
     @property
-    def native_value(self) -> float | None:
-        return _first_float(self._status.get("percentage"))
+    def native_value(self) -> int | None:
+        return _to_int(self._status.get("percentage"))
 
 
 class PentairRemainingCapacitySensor(PentairBaseSensor):
@@ -181,6 +224,7 @@ class PentairRemainingCapacitySensor(PentairBaseSensor):
 
     _attr_translation_key = "remaining_capacity"
     _attr_icon = "mdi:water-percent"
+    _attr_suggested_display_precision = 0
 
     @property
     def unique_id(self) -> str:
@@ -191,11 +235,11 @@ class PentairRemainingCapacitySensor(PentairBaseSensor):
         return "gal" if self._is_us_units else "L"
 
     @property
-    def native_value(self) -> float | None:
+    def native_value(self) -> int | None:
         # status.code 2 = regenerating -> extra to czas, nie pojemność
         if self._status.get("code") == 2:
             return None
-        return _first_float(self._status.get("extra"))
+        return _to_int(self._status.get("extra"))
 
 
 class PentairDaysRemainingSensor(PentairBaseSensor):
@@ -204,14 +248,15 @@ class PentairDaysRemainingSensor(PentairBaseSensor):
     _attr_translation_key = "days_remaining"
     _attr_native_unit_of_measurement = "d"
     _attr_icon = "mdi:calendar-clock"
+    _attr_suggested_display_precision = 0
 
     @property
     def unique_id(self) -> str:
         return f"{self._entry.entry_id}_days_remaining"
 
     @property
-    def native_value(self) -> float | None:
-        return _first_float(self._status.get("days_remaining"))
+    def native_value(self) -> int | None:
+        return _to_int(self._status.get("days_remaining"))
 
 
 class PentairHardnessSensor(PentairBaseSensor):
@@ -219,6 +264,7 @@ class PentairHardnessSensor(PentairBaseSensor):
 
     _attr_translation_key = "water_hardness"
     _attr_icon = "mdi:water-opacity"
+    _attr_suggested_display_precision = 0
 
     @property
     def unique_id(self) -> str:
@@ -232,8 +278,8 @@ class PentairHardnessSensor(PentairBaseSensor):
         return None
 
     @property
-    def native_value(self) -> float | None:
-        return _first_float(self._settings.get("install_hardness"))
+    def native_value(self) -> int | None:
+        return _to_int(self._settings.get("install_hardness"))
 
 
 class PentairCurrentFlowSensor(PentairBaseSensor):
@@ -241,6 +287,7 @@ class PentairCurrentFlowSensor(PentairBaseSensor):
 
     _attr_translation_key = "current_flow"
     _attr_icon = "mdi:water"
+    _attr_suggested_display_precision = 0
 
     @property
     def unique_id(self) -> str:
@@ -251,8 +298,8 @@ class PentairCurrentFlowSensor(PentairBaseSensor):
         return "gal/min" if self._is_us_units else "L/min"
 
     @property
-    def native_value(self) -> float | None:
-        return _first_float(self._flow.get("flow"))
+    def native_value(self) -> int | None:
+        return _to_int(self._flow.get("flow"))
 
 
 class PentairTotalVolumeSensor(PentairBaseSensor):
@@ -262,6 +309,7 @@ class PentairTotalVolumeSensor(PentairBaseSensor):
     _attr_device_class = SensorDeviceClass.WATER
     _attr_state_class = SensorStateClass.TOTAL_INCREASING
     _attr_icon = "mdi:water-pump"
+    _attr_suggested_display_precision = 0
 
     @property
     def unique_id(self) -> str:
@@ -272,8 +320,8 @@ class PentairTotalVolumeSensor(PentairBaseSensor):
         return "gal" if self._is_us_units else "L"
 
     @property
-    def native_value(self) -> float | None:
-        return _first_float(self._info.get("total_volume"))
+    def native_value(self) -> int | None:
+        return _to_int(self._info.get("total_volume"))
 
 
 class PentairRegenerationCountSensor(PentairBaseSensor):
@@ -282,20 +330,22 @@ class PentairRegenerationCountSensor(PentairBaseSensor):
     _attr_translation_key = "regeneration_count"
     _attr_state_class = SensorStateClass.TOTAL_INCREASING
     _attr_icon = "mdi:counter"
+    _attr_suggested_display_precision = 0
 
     @property
     def unique_id(self) -> str:
         return f"{self._entry.entry_id}_regeneration_count"
 
     @property
-    def native_value(self) -> float | None:
-        return _first_float(self._info.get("nr_regenerations"))
+    def native_value(self) -> int | None:
+        return _to_int(self._info.get("nr_regenerations"))
 
 
 class PentairLastRegenerationSensor(PentairBaseSensor):
-    """Data ostatniej regeneracji (surowa wartość z API)."""
+    """Data i godzina ostatniej regeneracji."""
 
     _attr_translation_key = "last_regeneration"
+    _attr_device_class = SensorDeviceClass.TIMESTAMP
     _attr_icon = "mdi:history"
 
     @property
@@ -303,15 +353,15 @@ class PentairLastRegenerationSensor(PentairBaseSensor):
         return f"{self._entry.entry_id}_last_regeneration"
 
     @property
-    def native_value(self) -> str | None:
-        value = self._info.get("last_regeneration")
-        return str(value) if value not in (None, "") else None
+    def native_value(self) -> datetime | None:
+        return _to_datetime(self._info.get("last_regeneration"))
 
 
 class PentairLastMaintenanceSensor(PentairBaseSensor):
-    """Data ostatniej konserwacji (surowa wartość z API)."""
+    """Data i godzina ostatniej konserwacji."""
 
     _attr_translation_key = "last_maintenance"
+    _attr_device_class = SensorDeviceClass.TIMESTAMP
     _attr_icon = "mdi:wrench-clock"
 
     @property
@@ -319,9 +369,8 @@ class PentairLastMaintenanceSensor(PentairBaseSensor):
         return f"{self._entry.entry_id}_last_maintenance"
 
     @property
-    def native_value(self) -> str | None:
-        value = self._info.get("last_maintenance")
-        return str(value) if value not in (None, "") else None
+    def native_value(self) -> datetime | None:
+        return _to_datetime(self._info.get("last_maintenance"))
 
 
 class PentairWarningsSensor(PentairBaseSensor):
@@ -360,6 +409,7 @@ class PentairWaterUsageSensor(PentairBaseSensor):
     Aktywny tylko gdy w opcjach integracji włączono pobieranie historii zużycia."""
 
     _attr_icon = "mdi:chart-bar"
+    _attr_suggested_display_precision = 0
 
     def __init__(self, coordinator, entry: ConfigEntry, api, interval: str) -> None:
         super().__init__(coordinator, entry, api)
@@ -375,9 +425,9 @@ class PentairWaterUsageSensor(PentairBaseSensor):
         return "gal" if self._is_us_units else "L"
 
     @property
-    def native_value(self) -> float | None:
+    def native_value(self) -> int | None:
         usage = (self.coordinator.data or {}).get("usage") or {}
-        return usage.get(self._interval)
+        return _to_int(usage.get(self._interval))
 
 
 class PentairSerialNumberSensor(PentairBaseSensor):

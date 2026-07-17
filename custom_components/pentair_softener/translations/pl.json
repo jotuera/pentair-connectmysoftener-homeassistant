@@ -62,7 +62,14 @@
         "name": "Numer seryjny"
       },
       "status": {
-        "name": "Status"
+        "name": "Status",
+        "state": {
+          "in_service": "Czynny",
+          "regenerating": "Regeneracja",
+          "holiday": "Tryb urlopowy",
+          "standby": "Czuwanie",
+          "offline": "Offline"
+        }
       },
       "status_progress": {
         "name": "Postęp"
