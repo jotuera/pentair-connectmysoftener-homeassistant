@@ -54,13 +54,13 @@ class PentairHolidayModeNumber(CoordinatorEntity, NumberEntity):
         return f"{self._entry.entry_id}_holiday_mode"
 
     @property
-    def native_value(self) -> float | None:
+    def native_value(self) -> int | None:
         value = self._dashboard.get("holiday_mode")
-        # API bywa bool (wł./wył.) albo liczba dni – normalizujemy do liczby.
+        # API bywa bool (wł./wył.) albo liczba dni – normalizujemy do pełnych dni.
         if isinstance(value, bool):
-            return 1.0 if value else 0.0
+            return 1 if value else 0
         if isinstance(value, (int, float)):
-            return float(value)
+            return int(round(value))
         return None
 
     async def async_set_native_value(self, value: float) -> None:
