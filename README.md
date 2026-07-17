@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://github.com/hacs/integration"><img src="https://img.shields.io/badge/HACS-Custom-41BDF5.svg" alt="HACS Custom"></a>
-  <img src="https://img.shields.io/badge/version-0.8.0-blue.svg" alt="Version">
+  <img src="https://img.shields.io/badge/version-0.9.0-blue.svg" alt="Version">
   <img src="https://img.shields.io/badge/HA-2023.1%2B-41BDF5.svg" alt="Home Assistant">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License: MIT"></a>
 </p>
@@ -48,7 +48,7 @@ please open an issue to report whether it works.
 | Status progress | Progress bar value (remaining capacity while in service, regeneration progress while regenerating) |
 | Remaining capacity | Remaining soft-water capacity (L / gal) |
 | Days remaining | Estimated days until capacity is exhausted |
-| Water hardness | Configured inlet hardness with its unit (e.g. °d) |
+| Regeneration time | Hour the appliance is programmed to regenerate at (e.g. `02:00`) — read-only, set on the device itself |
 | Current flow | Instantaneous flow (L/min or gal/min) |
 | Total volume | Total treated water since installation |
 | Regeneration count | Total number of regenerations |
@@ -64,6 +64,7 @@ please open an issue to report whether it works.
 |--------|--------------|-------------|
 | Online | `connectivity` | Appliance reachable (`status.code != 0`) |
 | Salt warning | `problem` | Low-salt warning active |
+| Pending changes | — | A setting was sent but the appliance has not applied it yet |
 
 ### Controls
 | Entity | Type | Action |
@@ -72,6 +73,8 @@ please open an issue to report whether it works.
 | Regenerate now | `button` | Start a regeneration immediately |
 | Regenerate at scheduled time | `button` | Queue a regeneration at the programmed hour |
 | Holiday mode | `number` (0–40 days) | `0` = off, `N` = enabled for N days |
+| Water hardness | `number` (1–99) | Inlet hardness, in the unit configured on the appliance (e.g. °d) |
+| System time | `time` | The appliance's own clock — read it to spot drift, or set it |
 
 ### Water usage (optional)
 

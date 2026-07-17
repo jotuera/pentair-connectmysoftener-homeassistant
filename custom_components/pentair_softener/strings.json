@@ -40,9 +40,6 @@
       "days_remaining": {
         "name": "Remaining days"
       },
-      "water_hardness": {
-        "name": "Hardness"
-      },
       "total_volume": {
         "name": "Total Volume"
       },
@@ -89,11 +86,17 @@
       "water_used_month": {
         "name": "Water used this month"
       },
+      "regeneration_time": {
+        "name": "Regeneration time"
+      },
       "water_used_year": {
         "name": "Water used this year"
       }
     },
     "binary_sensor": {
+      "pending_changes": {
+        "name": "Pending Changes"
+      },
       "salt_warning": {
         "name": "Salt alarm"
       },
@@ -113,8 +116,16 @@
       }
     },
     "number": {
+      "water_hardness": {
+        "name": "Hardness"
+      },
       "holiday_mode": {
         "name": "Holiday Mode"
+      }
+    },
+    "time": {
+      "system_time": {
+        "name": "System time"
       }
     }
   }

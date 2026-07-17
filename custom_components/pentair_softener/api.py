@@ -248,6 +248,16 @@ class PentairApi:
         items.sort(key=lambda item: str(item.get("datetime") or ""), reverse=True)
         return items
 
+    async def get_pending(self) -> list[Any]:
+        """Zmiany wysłane do urządzenia, które jeszcze nie zostały zastosowane.
+
+        Aplikacja traktuje niepustą listę jako 'są oczekujące zmiany'."""
+        await self.ensure_device_id()
+        result = await self._request(
+            "GET", f"/water_softeners/{self._device_id}/pending"
+        )
+        return result if isinstance(result, list) else []
+
     async def save_settings(self, data: Dict[str, Any]) -> Any:
         """Zapis ustawień/akcji przez PUT /water_softeners/{id}/stats."""
         await self.ensure_device_id()
@@ -266,6 +276,14 @@ class PentairApi:
     async def set_holiday_mode(self, days: int) -> Any:
         """Ustaw tryb urlopowy: 0 = wył., N = liczba dni (1-40)."""
         return await self.save_settings({"holiday_mode": days})
+
+    async def set_hardness(self, value: int) -> Any:
+        """Ustaw twardość wody na wejściu (jednostka wg hard_units)."""
+        return await self.save_settings({"install_hardness": value})
+
+    async def set_system_time(self, value: str) -> Any:
+        """Ustaw zegar urządzenia. Aplikacja wysyła czysty 'HH:MM' (24h)."""
+        return await self.save_settings({"system_time": value})
 
     async def get_graph(
         self, interval: str, when: datetime, timezone: str

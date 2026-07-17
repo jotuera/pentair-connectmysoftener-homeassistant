@@ -40,9 +40,6 @@
       "days_remaining": {
         "name": "Numărul de zile rămase"
       },
-      "water_hardness": {
-        "name": "Duritate"
-      },
       "total_volume": {
         "name": "Volum total"
       },
@@ -89,11 +86,17 @@
       "water_used_month": {
         "name": "Apă consumată această lună"
       },
+      "regeneration_time": {
+        "name": "Ora regenerării"
+      },
       "water_used_year": {
         "name": "Apă consumată acest an"
       }
     },
     "binary_sensor": {
+      "pending_changes": {
+        "name": "Modificări în curs"
+      },
       "salt_warning": {
         "name": "Alarmă sare"
       },
@@ -113,8 +116,16 @@
       }
     },
     "number": {
+      "water_hardness": {
+        "name": "Duritate"
+      },
       "holiday_mode": {
         "name": "Mod vacanță"
+      }
+    },
+    "time": {
+      "system_time": {
+        "name": "Ora sistemului"
       }
     }
   }

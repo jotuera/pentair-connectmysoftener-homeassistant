@@ -40,9 +40,6 @@
       "days_remaining": {
         "name": "Aantal dagen resterend"
       },
-      "water_hardness": {
-        "name": "Hardheid"
-      },
       "total_volume": {
         "name": "Totaal volume"
       },
@@ -89,11 +86,17 @@
       "water_used_month": {
         "name": "Waterverbruik deze maand"
       },
+      "regeneration_time": {
+        "name": "Regeneratietijd"
+      },
       "water_used_year": {
         "name": "Waterverbruik dit jaar"
       }
     },
     "binary_sensor": {
+      "pending_changes": {
+        "name": "Wijzigingen in behandeling"
+      },
       "salt_warning": {
         "name": "Zoutalarm"
       },
@@ -113,8 +116,16 @@
       }
     },
     "number": {
+      "water_hardness": {
+        "name": "Hardheid"
+      },
       "holiday_mode": {
         "name": "Vakantiemodus"
+      }
+    },
+    "time": {
+      "system_time": {
+        "name": "Systeemtijd"
       }
     }
   }
