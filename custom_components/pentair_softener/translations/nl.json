@@ -61,6 +61,9 @@
       "serial_number": {
         "name": "Serie Nummer"
       },
+      "salt_used": {
+        "name": "Zout verbruikt"
+      },
       "status": {
         "name": "Status",
         "state": {

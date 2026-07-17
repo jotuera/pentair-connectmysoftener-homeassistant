@@ -58,6 +58,9 @@ class PentairCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             "flow": await self._safe(self.api.get_flow, "flow"),
             "info": await self._safe(self.api.get_info, "info"),
             "settings": await self._safe(self.api.get_settings, "settings"),
+            "regenerations": await self._safe(
+                self.api.get_regenerations, "regenerations", default=[]
+            ),
         }
 
         if self.entry.options.get(CONF_ENABLE_GRAPHS, DEFAULT_ENABLE_GRAPHS):
@@ -78,13 +81,13 @@ class PentairCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 usage[interval] = None
         return usage
 
-    async def _safe(self, coro_func, name: str) -> dict[str, Any]:
-        """Wywołaj opcjonalny endpoint; przy błędzie zaloguj i zwróć {}."""
+    async def _safe(self, coro_func, name: str, default: Any = None) -> Any:
+        """Wywołaj opcjonalny endpoint; przy błędzie zaloguj i zwróć wartość domyślną."""
         try:
             return await coro_func()
         except (PentairApiError, PentairAuthError) as err:
             _LOGGER.debug("Pentair: %s unavailable: %s", name, err)
-            return {}
+            return {} if default is None else default
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:

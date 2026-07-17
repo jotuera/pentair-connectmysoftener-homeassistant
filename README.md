@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://github.com/hacs/integration"><img src="https://img.shields.io/badge/HACS-Custom-41BDF5.svg" alt="HACS Custom"></a>
-  <img src="https://img.shields.io/badge/version-0.7.2-blue.svg" alt="Version">
+  <img src="https://img.shields.io/badge/version-0.8.0-blue.svg" alt="Version">
   <img src="https://img.shields.io/badge/HA-2023.1%2B-41BDF5.svg" alt="Home Assistant">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License: MIT"></a>
 </p>
@@ -55,6 +55,7 @@ please open an issue to report whether it works.
 | Last regeneration | Timestamp of the last regeneration |
 | Last maintenance | Timestamp of the last maintenance |
 | Warnings | Number of active warnings (descriptions in attributes) |
+| Salt used | Salt consumed by the last regeneration, with the regeneration history in attributes |
 | Serial number | Appliance serial number *(diagnostic)* |
 | Software version | Appliance firmware version *(diagnostic)* |
 

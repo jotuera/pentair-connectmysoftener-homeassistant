@@ -234,6 +234,20 @@ class PentairApi:
             "GET", f"/water_softeners/{self._device_id}/settings"
         )
 
+    async def get_regenerations(self) -> list[dict[str, Any]]:
+        """Historia regeneracji: [{datetime, salt_used (gramy), percentage}, ...].
+
+        Zwracana lista jest posortowana malejąco po dacie, jak w aplikacji."""
+        await self.ensure_device_id()
+        result = await self._request(
+            "GET", f"/water_softeners/{self._device_id}/regenerations"
+        )
+        if not isinstance(result, list):
+            return []
+        items = [item for item in result if isinstance(item, dict)]
+        items.sort(key=lambda item: str(item.get("datetime") or ""), reverse=True)
+        return items
+
     async def save_settings(self, data: Dict[str, Any]) -> Any:
         """Zapis ustawień/akcji przez PUT /water_softeners/{id}/stats."""
         await self.ensure_device_id()
