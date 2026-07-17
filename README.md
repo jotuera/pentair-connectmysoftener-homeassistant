@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://github.com/hacs/integration"><img src="https://img.shields.io/badge/HACS-Custom-41BDF5.svg" alt="HACS Custom"></a>
-  <img src="https://img.shields.io/badge/version-0.7.0-blue.svg" alt="Version">
+  <img src="https://img.shields.io/badge/version-0.7.1-blue.svg" alt="Version">
   <img src="https://img.shields.io/badge/HA-2023.1%2B-41BDF5.svg" alt="Home Assistant">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License: MIT"></a>
 </p>

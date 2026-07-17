@@ -378,6 +378,7 @@ class PentairWarningsSensor(PentairBaseSensor):
 
     _attr_translation_key = "warnings"
     _attr_icon = "mdi:alert"
+    _attr_suggested_display_precision = 0
 
     @property
     def unique_id(self) -> str:
