@@ -40,4 +40,7 @@ REGEN_AT_SCHEDULED = 2
 # Tryb urlopowy: dozwolony zakres liczby dni (0 = wyłączony)
 HOLIDAY_MODE_MAX_DAYS = 40
 
+# Ile wpisów historii regeneracji trzymać w atrybutach sensora
+REGEN_HISTORY_LIMIT = 20
+
 PLATFORMS: list[str] = ["sensor", "binary_sensor", "button", "number"]

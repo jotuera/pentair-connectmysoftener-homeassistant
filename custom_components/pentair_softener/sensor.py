@@ -23,6 +23,7 @@ from .const import (
     CONF_ENABLE_GRAPHS,
     DEFAULT_ENABLE_GRAPHS,
     GRAPH_INTERVALS,
+    REGEN_HISTORY_LIMIT,
 )
 
 
@@ -100,6 +101,7 @@ async def async_setup_entry(
         PentairLastRegenerationSensor(coordinator, entry, api),
         PentairLastMaintenanceSensor(coordinator, entry, api),
         PentairWarningsSensor(coordinator, entry, api),
+        PentairSaltUsedSensor(coordinator, entry, api),
         PentairSerialNumberSensor(coordinator, entry, api),
         PentairSoftwareVersionSensor(coordinator, entry, api),
     ]
@@ -401,6 +403,50 @@ class PentairWarningsSensor(PentairBaseSensor):
             "types": [
                 w.get("type") for w in warnings if isinstance(w, dict)
             ],
+        }
+
+
+class PentairSaltUsedSensor(PentairBaseSensor):
+    """Sól zużyta podczas ostatniej regeneracji (jak ekran Historia w aplikacji).
+
+    API zwraca salt_used zawsze w gramach; device_class weight pozwala HA
+    przeliczyć na inne jednostki. Pełna historia jest w atrybutach."""
+
+    _attr_translation_key = "salt_used"
+    _attr_device_class = SensorDeviceClass.WEIGHT
+    _attr_native_unit_of_measurement = "g"
+    _attr_suggested_display_precision = 0
+    _attr_icon = "mdi:shaker"
+
+    @property
+    def _regenerations(self) -> list[dict[str, Any]]:
+        value = (self.coordinator.data or {}).get("regenerations")
+        return value if isinstance(value, list) else []
+
+    @property
+    def unique_id(self) -> str:
+        return f"{self._entry.entry_id}_salt_used"
+
+    @property
+    def native_value(self) -> int | None:
+        if not self._regenerations:
+            return None
+        return _to_int(self._regenerations[0].get("salt_used"))
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        # Ograniczamy historię, żeby nie rozdmuchiwać bazy recordera.
+        history = [
+            {
+                "datetime": item.get("datetime"),
+                "salt_used": _to_int(item.get("salt_used")),
+                "percentage": _to_int(item.get("percentage")),
+            }
+            for item in self._regenerations[:REGEN_HISTORY_LIMIT]
+        ]
+        return {
+            "last_datetime": history[0]["datetime"] if history else None,
+            "history": history,
         }
 
 

@@ -61,6 +61,9 @@
       "serial_number": {
         "name": "Numero di serie"
       },
+      "salt_used": {
+        "name": "Sale utilizzato"
+      },
       "status": {
         "name": "Stato",
         "state": {

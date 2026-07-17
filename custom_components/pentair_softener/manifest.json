@@ -1,7 +1,7 @@
 {
   "domain": "pentair_softener",
   "name": "Pentair ConnectMySoftener",
-  "version": "0.7.2",
+  "version": "0.8.0",
   "documentation": "https://github.com/jotuera/pentair-connectmysoftener-homeassistant",
   "issue_tracker": "https://github.com/jotuera/pentair-connectmysoftener-homeassistant/issues",
   "requirements": [],
