@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="custom_components/pentair_softener/icon.png" width="120" alt="Pentair ConnectMySoftener logo">
+  <img src="https://raw.githubusercontent.com/jotuera/pentair-connectmysoftener-homeassistant/main/custom_components/pentair_softener/brand/icon.png" width="120" alt="Pentair ConnectMySoftener logo">
 </p>
 
 <h1 align="center">Pentair ConnectMySoftener — Home Assistant</h1>
