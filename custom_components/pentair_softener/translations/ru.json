@@ -62,7 +62,14 @@
         "name": "Серийный номер"
       },
       "status": {
-        "name": "Статус"
+        "name": "Статус",
+        "state": {
+          "in_service": "В работе",
+          "regenerating": "Регенерация",
+          "holiday": "Отпуск",
+          "standby": "Ожидание",
+          "offline": "Не в сети"
+        }
       },
       "status_progress": {
         "name": "Прогресс"

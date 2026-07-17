@@ -62,7 +62,14 @@
         "name": "Serie"
       },
       "status": {
-        "name": "Stare"
+        "name": "Stare",
+        "state": {
+          "in_service": "În funcțiune",
+          "regenerating": "Se regenerează",
+          "holiday": "Vacanță",
+          "standby": "Standby",
+          "offline": "Deconectat"
+        }
       },
       "status_progress": {
         "name": "Progres"

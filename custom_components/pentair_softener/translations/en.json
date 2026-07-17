@@ -62,7 +62,14 @@
         "name": "Serial Number"
       },
       "status": {
-        "name": "Status"
+        "name": "Status",
+        "state": {
+          "in_service": "In service",
+          "regenerating": "Regenerating",
+          "holiday": "Holiday",
+          "standby": "Standby",
+          "offline": "Offline"
+        }
       },
       "status_progress": {
         "name": "Status progress"
