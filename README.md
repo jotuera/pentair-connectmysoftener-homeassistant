@@ -175,6 +175,23 @@ color_thresholds:
     color: "#3295a8"
 ```
 
+### Regeneration history
+
+Recreates the app's *History* screen. The `Salt used` sensor keeps the last 20
+regenerations in its `history` attribute, so a plain markdown card is enough — no
+custom cards needed.
+
+```yaml
+type: markdown
+title: Regeneration history
+content: |-
+  | Date | Salt used |
+  |---|---|
+  {%- for r in state_attr('sensor.pentair_softener_salt_used', 'history') or [] %}
+  | {{ as_timestamp(r.datetime, default=0) | timestamp_custom('%d/%m/%Y %H:%M') }} | {{ r.salt_used }} g |
+  {%- endfor %}
+```
+
 ## Automation example
 
 ### Notify when the salt level is low
