@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://github.com/hacs/integration"><img src="https://img.shields.io/badge/HACS-Custom-41BDF5.svg" alt="HACS Custom"></a>
-  <img src="https://img.shields.io/badge/version-0.9.0-blue.svg" alt="Version">
+  <img src="https://img.shields.io/badge/version-0.10.0-blue.svg" alt="Version">
   <img src="https://img.shields.io/badge/HA-2023.1%2B-41BDF5.svg" alt="Home Assistant">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License: MIT"></a>
 </p>
@@ -102,6 +102,11 @@ matching the app's Day / Week / Month / Year view:
 > (`sensor.pentair_softener_…`). If your account profile has a custom device name
 > (e.g. *Supreme Soft20*), Home Assistant will slug it instead
 > (`sensor.supreme_soft20_…`) — adjust the entity IDs to match.
+>
+> The part after the device name is always English (`_total_volume`, `_salt_used`, …)
+> no matter which language Home Assistant runs in — only the displayed names are
+> translated. Entity IDs created before v0.10.0 may still use translated names;
+> rename them in the entity settings to match these examples.
 
 ### Info card
 
