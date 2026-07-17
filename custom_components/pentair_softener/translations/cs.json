@@ -40,9 +40,6 @@
       "days_remaining": {
         "name": "Počet zbývajících dní"
       },
-      "water_hardness": {
-        "name": "Tvrdost"
-      },
       "total_volume": {
         "name": "Celkový objem"
       },
@@ -89,11 +86,17 @@
       "water_used_month": {
         "name": "Spotřeba vody tento měsíc"
       },
+      "regeneration_time": {
+        "name": "Čas regenerace"
+      },
       "water_used_year": {
         "name": "Spotřeba vody tento rok"
       }
     },
     "binary_sensor": {
+      "pending_changes": {
+        "name": "Nevyřízené změny"
+      },
       "salt_warning": {
         "name": "Výstraha soli"
       },
@@ -113,8 +116,16 @@
       }
     },
     "number": {
+      "water_hardness": {
+        "name": "Tvrdost"
+      },
       "holiday_mode": {
         "name": "Režim dovolené"
+      }
+    },
+    "time": {
+      "system_time": {
+        "name": "Systémový čas"
       }
     }
   }

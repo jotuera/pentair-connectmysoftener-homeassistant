@@ -8,7 +8,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import DOMAIN, HOLIDAY_MODE_MAX_DAYS
+from .const import DOMAIN, HOLIDAY_MODE_MAX_DAYS, HARDNESS_MIN, HARDNESS_MAX
 
 
 async def async_setup_entry(
@@ -21,19 +21,19 @@ async def async_setup_entry(
     coordinator = data["coordinator"]
     api = data["api"]
 
-    async_add_entities([PentairHolidayModeNumber(coordinator, entry, api)])
+    async_add_entities(
+        [
+            PentairHolidayModeNumber(coordinator, entry, api),
+            PentairHardnessNumber(coordinator, entry, api),
+        ]
+    )
 
 
-class PentairHolidayModeNumber(CoordinatorEntity, NumberEntity):
-    """Tryb urlopowy jako liczba dni: 0 = wyłączony, N = włączony na N dni."""
+class PentairBaseNumber(CoordinatorEntity, NumberEntity):
+    """Bazowa encja number Pentair."""
 
     _attr_has_entity_name = True
-    _attr_translation_key = "holiday_mode"
-    _attr_icon = "mdi:palm-tree"
-    _attr_native_min_value = 0
-    _attr_native_max_value = HOLIDAY_MODE_MAX_DAYS
     _attr_native_step = 1
-    _attr_native_unit_of_measurement = "d"
     _attr_mode = NumberMode.BOX
 
     def __init__(self, coordinator, entry: ConfigEntry, api) -> None:
@@ -48,6 +48,33 @@ class PentairHolidayModeNumber(CoordinatorEntity, NumberEntity):
     @property
     def _info(self) -> dict[str, Any]:
         return (self.coordinator.data or {}).get("info") or {}
+
+    @property
+    def _settings(self) -> dict[str, Any]:
+        return ((self.coordinator.data or {}).get("settings") or {}).get(
+            "settings"
+        ) or {}
+
+    @property
+    def device_info(self) -> dict[str, Any]:
+        profile = self._api.profile or {}
+        serial = profile.get("serial") or self._info.get("serial")
+        return {
+            "identifiers": {(DOMAIN, serial or self._entry.entry_id)},
+            "name": profile.get("name") or "Pentair Softener",
+            "manufacturer": "Pentair",
+            "model": "ConnectMySoftener",
+        }
+
+
+class PentairHolidayModeNumber(PentairBaseNumber):
+    """Tryb urlopowy jako liczba dni: 0 = wyłączony, N = włączony na N dni."""
+
+    _attr_translation_key = "holiday_mode"
+    _attr_icon = "mdi:palm-tree"
+    _attr_native_min_value = 0
+    _attr_native_max_value = HOLIDAY_MODE_MAX_DAYS
+    _attr_native_unit_of_measurement = "d"
 
     @property
     def unique_id(self) -> str:
@@ -67,13 +94,38 @@ class PentairHolidayModeNumber(CoordinatorEntity, NumberEntity):
         await self._api.set_holiday_mode(int(value))
         await self.coordinator.async_request_refresh()
 
+
+class PentairHardnessNumber(PentairBaseNumber):
+    """Twardość wody na wejściu – zapisywalna, jak w ustawieniach aplikacji.
+
+    Jednostka pochodzi z hard_units (np. °d, °f, ppm)."""
+
+    _attr_translation_key = "water_hardness"
+    _attr_icon = "mdi:water-opacity"
+    _attr_native_min_value = HARDNESS_MIN
+    _attr_native_max_value = HARDNESS_MAX
+
     @property
-    def device_info(self) -> dict[str, Any]:
-        profile = self._api.profile or {}
-        serial = profile.get("serial") or self._info.get("serial")
-        return {
-            "identifiers": {(DOMAIN, serial or self._entry.entry_id)},
-            "name": profile.get("name") or "Pentair Softener",
-            "manufacturer": "Pentair",
-            "model": "ConnectMySoftener",
-        }
+    def unique_id(self) -> str:
+        return f"{self._entry.entry_id}_water_hardness"
+
+    @property
+    def native_unit_of_measurement(self) -> str | None:
+        hard_units = self._settings.get("hard_units")
+        if isinstance(hard_units, dict):
+            return hard_units.get("value")
+        return None
+
+    @property
+    def native_value(self) -> int | None:
+        value = self._settings.get("install_hardness")
+        if isinstance(value, bool) or value in (None, ""):
+            return None
+        try:
+            return int(round(float(str(value).replace(",", "."))))
+        except (TypeError, ValueError):
+            return None
+
+    async def async_set_native_value(self, value: float) -> None:
+        await self._api.set_hardness(int(value))
+        await self.coordinator.async_request_refresh()

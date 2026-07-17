@@ -94,7 +94,7 @@ async def async_setup_entry(
         PentairStatusProgressSensor(coordinator, entry, api),
         PentairRemainingCapacitySensor(coordinator, entry, api),
         PentairDaysRemainingSensor(coordinator, entry, api),
-        PentairHardnessSensor(coordinator, entry, api),
+        PentairRegenerationTimeSensor(coordinator, entry, api),
         PentairCurrentFlowSensor(coordinator, entry, api),
         PentairTotalVolumeSensor(coordinator, entry, api),
         PentairRegenerationCountSensor(coordinator, entry, api),
@@ -261,27 +261,26 @@ class PentairDaysRemainingSensor(PentairBaseSensor):
         return _to_int(self._status.get("days_remaining"))
 
 
-class PentairHardnessSensor(PentairBaseSensor):
-    """Skonfigurowana twardość wody na wejściu (np. 21 °d)."""
+class PentairRegenerationTimeSensor(PentairBaseSensor):
+    """Zaplanowana godzina regeneracji (np. 02:00) z meta.regen_time.
 
-    _attr_translation_key = "water_hardness"
-    _attr_icon = "mdi:water-opacity"
-    _attr_suggested_display_precision = 0
+    Ustawiana na samym urządzeniu – API nie udostępnia zapisu tej wartości,
+    aplikacja również tylko ją wyświetla (na przycisku 'Zregeneruj o ...')."""
+
+    _attr_translation_key = "regeneration_time"
+    _attr_icon = "mdi:clock-check-outline"
 
     @property
     def unique_id(self) -> str:
-        return f"{self._entry.entry_id}_water_hardness"
+        return f"{self._entry.entry_id}_regeneration_time"
 
     @property
-    def native_unit_of_measurement(self) -> str | None:
-        hard_units = self._settings.get("hard_units")
-        if isinstance(hard_units, dict):
-            return hard_units.get("value")
-        return None
-
-    @property
-    def native_value(self) -> int | None:
-        return _to_int(self._settings.get("install_hardness"))
+    def native_value(self) -> str | None:
+        value = self._meta.get("regen_time")
+        if value in (None, ""):
+            return None
+        # API zwraca np. "02:00 h" – sufiks jednostki obcinamy.
+        return str(value).split(" ")[0] or None
 
 
 class PentairCurrentFlowSensor(PentairBaseSensor):

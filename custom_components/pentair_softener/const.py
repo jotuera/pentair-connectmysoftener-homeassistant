@@ -43,4 +43,8 @@ HOLIDAY_MODE_MAX_DAYS = 40
 # Ile wpisów historii regeneracji trzymać w atrybutach sensora
 REGEN_HISTORY_LIMIT = 20
 
-PLATFORMS: list[str] = ["sensor", "binary_sensor", "button", "number"]
+# Twardość wody na wejściu – zakres jak w aplikacji (input min/max)
+HARDNESS_MIN = 1
+HARDNESS_MAX = 99
+
+PLATFORMS: list[str] = ["sensor", "binary_sensor", "button", "number", "time"]

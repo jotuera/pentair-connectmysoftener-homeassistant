@@ -40,9 +40,6 @@
       "days_remaining": {
         "name": "Количество оставшихся дней"
       },
-      "water_hardness": {
-        "name": "Жесткость"
-      },
       "total_volume": {
         "name": "Общий объем"
       },
@@ -89,11 +86,17 @@
       "water_used_month": {
         "name": "Расход воды за месяц"
       },
+      "regeneration_time": {
+        "name": "Время регенерации"
+      },
       "water_used_year": {
         "name": "Расход воды за год"
       }
     },
     "binary_sensor": {
+      "pending_changes": {
+        "name": "Незавершенные изменения"
+      },
       "salt_warning": {
         "name": "Предупреждение о соли"
       },
@@ -113,8 +116,16 @@
       }
     },
     "number": {
+      "water_hardness": {
+        "name": "Жесткость"
+      },
       "holiday_mode": {
         "name": "Режим отпуска"
+      }
+    },
+    "time": {
+      "system_time": {
+        "name": "Системное время"
       }
     }
   }

@@ -28,6 +28,7 @@ async def async_setup_entry(
         [
             PentairOnlineBinarySensor(coordinator, entry, api),
             PentairSaltWarningBinarySensor(coordinator, entry, api),
+            PentairPendingChangesBinarySensor(coordinator, entry, api),
         ]
     )
 
@@ -79,6 +80,27 @@ class PentairOnlineBinarySensor(PentairBaseBinarySensor):
         if code is None:
             return None
         return code != 0
+
+
+class PentairPendingChangesBinarySensor(PentairBaseBinarySensor):
+    """Zmiany wysłane do urządzenia, które jeszcze do niego nie dotarły.
+
+    Odpowiednik żółtej karty 'Oczekujące zmiany' w aplikacji: niepusta lista
+    z /pending oznacza, że komenda czeka na zastosowanie."""
+
+    _attr_translation_key = "pending_changes"
+    _attr_icon = "mdi:sync"
+
+    @property
+    def unique_id(self) -> str:
+        return f"{self._entry.entry_id}_pending_changes"
+
+    @property
+    def is_on(self) -> bool | None:
+        pending = (self.coordinator.data or {}).get("pending")
+        if not isinstance(pending, list):
+            return None
+        return len(pending) > 0
 
 
 class PentairSaltWarningBinarySensor(PentairBaseBinarySensor):

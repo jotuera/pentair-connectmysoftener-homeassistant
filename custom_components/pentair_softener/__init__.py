@@ -61,6 +61,7 @@ class PentairCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             "regenerations": await self._safe(
                 self.api.get_regenerations, "regenerations", default=[]
             ),
+            "pending": await self._safe(self.api.get_pending, "pending", default=[]),
         }
 
         if self.entry.options.get(CONF_ENABLE_GRAPHS, DEFAULT_ENABLE_GRAPHS):
