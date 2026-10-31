@@ -256,8 +256,7 @@ no longer accepts icons for custom integrations, see the
 ## Credits
 
 - Author: **JoTu** — [github.com/jotuera](https://github.com/jotuera)
-- Based on the working Erie integration and extended by reverse-engineering the
-  ConnectMySoftener app.
+- Written from scratch by reverse-engineering the ConnectMySoftener app's cloud API.
 
 ## License
 
