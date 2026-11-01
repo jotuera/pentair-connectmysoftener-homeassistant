@@ -9,6 +9,7 @@
   <img src="https://img.shields.io/badge/version-0.10.0-blue.svg" alt="Version">
   <img src="https://img.shields.io/badge/HA-2023.1%2B-41BDF5.svg" alt="Home Assistant">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License: MIT"></a>
+  <a href="https://buymeacoffee.com/jotuera"><img src="https://img.shields.io/badge/Buy%20me%20a%20coffee-jotuera-FFDD00?logo=buymeacoffee&logoColor=black" alt="Buy Me a Coffee"></a>
 </p>
 
 Home Assistant integration for **Pentair ConnectMySoftener** water softeners
@@ -257,6 +258,12 @@ no longer accepts icons for custom integrations, see the
 
 - Author: **JoTu** — [github.com/jotuera](https://github.com/jotuera)
 - Written from scratch by reverse-engineering the ConnectMySoftener app's cloud API.
+
+## Support
+
+If you find this integration useful, please consider supporting me by buying me a coffee. Thank you!
+
+<a href="https://buymeacoffee.com/jotuera"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-orange.png" alt="Buy Me a Coffee" width="260"></a>
 
 ## License
 
