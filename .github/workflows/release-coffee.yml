@@ -1,0 +1,32 @@
+name: Add star + coffee block to releases
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  add-coffee-block:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepend star + coffee block to release notes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.event.release.tag_name }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          body="$(gh release view "$TAG" --repo "$REPO" --json body -q .body)"
+          if printf '%s' "$body" | grep -qF '<!-- coffee-block -->'; then
+            echo "Coffee block already present, skipping."
+            exit 0
+          fi
+          sed "s#__REPO__#${REPO}#g" .github/release-coffee-block.md > notes.md
+          printf '\n%s\n' "$body" >> notes.md
+          gh release edit "$TAG" --repo "$REPO" --notes-file notes.md
+          echo "Coffee block prepended to $TAG."
