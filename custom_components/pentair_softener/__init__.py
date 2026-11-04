@@ -2,8 +2,10 @@ from __future__ import annotations
 
 from datetime import timedelta
 import logging
+from pathlib import Path
 from typing import Any
 
+from homeassistant.components import frontend
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
@@ -11,6 +13,7 @@ from homeassistant.helpers.update_coordinator import (
     DataUpdateCoordinator,
     UpdateFailed,
 )
+from homeassistant.loader import async_get_integration
 from homeassistant.util import dt as dt_util
 
 from .const import (
@@ -25,6 +28,39 @@ from .const import (
 from .api import PentairApi, PentairApiError, PentairAuthError
 
 _LOGGER = logging.getLogger(__name__)
+
+# Dashboard card served by the integration itself, so `type: custom:pentair-softener-card`
+# works without adding a Lovelace resource by hand. A small loader is registered as an
+# extra JS module; it imports the card bundle unless the user installed a newer copy
+# as a Lovelace resource.
+CARD_URL = f"/{DOMAIN}/pentair-softener-card.js"
+CARD_FILE = Path(__file__).parent / "frontend" / "pentair-softener-card.js"
+LOADER_URL = f"/{DOMAIN}/pentair-softener-loader.js"
+LOADER_FILE = Path(__file__).parent / "frontend" / "pentair-softener-loader.js"
+
+
+async def _async_register_card(hass: HomeAssistant, version: str | None) -> None:
+    """Serve the card bundle and loader once per Home Assistant run."""
+    if (
+        hass.data.get(f"{DOMAIN}_card")
+        or not CARD_FILE.is_file()
+        or not LOADER_FILE.is_file()
+    ):
+        return
+    hass.data[f"{DOMAIN}_card"] = True
+    try:
+        from homeassistant.components.http import StaticPathConfig
+
+        await hass.http.async_register_static_paths(
+            [
+                StaticPathConfig(CARD_URL, str(CARD_FILE), False),
+                StaticPathConfig(LOADER_URL, str(LOADER_FILE), False),
+            ]
+        )
+    except ImportError:  # Home Assistant before 2024.7
+        hass.http.register_static_path(CARD_URL, str(CARD_FILE), False)
+        hass.http.register_static_path(LOADER_URL, str(LOADER_FILE), False)
+    frontend.add_extra_js_url(hass, f"{LOADER_URL}?v={version or '0'}")
 
 
 class PentairCoordinator(DataUpdateCoordinator[dict[str, Any]]):
@@ -102,6 +138,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     coordinator = PentairCoordinator(hass, api, entry)
     await coordinator.async_config_entry_first_refresh()
+
+    integration = await async_get_integration(hass, DOMAIN)
+    version = str(integration.version) if integration.version else None
+    await _async_register_card(hass, version)
 
     hass.data.setdefault(DOMAIN, {})
     hass.data[DOMAIN][entry.entry_id] = {

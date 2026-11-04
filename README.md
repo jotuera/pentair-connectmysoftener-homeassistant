@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://github.com/hacs/integration"><img src="https://img.shields.io/badge/HACS-Custom-41BDF5.svg" alt="HACS Custom"></a>
-  <img src="https://img.shields.io/badge/version-0.10.0-blue.svg" alt="Version">
+  <img src="https://img.shields.io/badge/version-0.11.0-blue.svg" alt="Version">
   <img src="https://img.shields.io/badge/HA-2023.1%2B-41BDF5.svg" alt="Home Assistant">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License: MIT"></a>
   <a href="https://buymeacoffee.com/jotuera"><img src="https://img.shields.io/badge/Buy%20me%20a%20coffee-jotuera-FFDD00?logo=buymeacoffee&logoColor=black" alt="Buy Me a Coffee"></a>
@@ -30,6 +30,7 @@ mobile app does, exposing sensors for monitoring and entities for controlling th
 - 🔁 Trigger a regeneration (now or at the scheduled time)
 - 🏖️ Enable/disable holiday mode for a number of days
 - 🌍 Localized entity names in **10 languages** (see below)
+- 🧩 A ready-made **dashboard card**, served by the integration (see below)
 - ☁️ `cloud_polling` every 90 s, units (L / gal) picked automatically from the account
 
 ## Tested hardware
@@ -244,6 +245,44 @@ Entity names and the setup dialog are translated into:
 **English, Polish, German, French, Dutch, Spanish, Romanian, Russian, Czech, Italian.**
 
 Entity translations are taken directly from the official app's language files where available.
+
+## Dashboard card
+
+The integration ships a ready-made Lovelace card — the softener at a glance: remaining
+capacity with a progress bar, status, salt level, water usage, last/next regeneration,
+salt per regeneration, flow, the **Salt added / Regenerate / Night regeneration** buttons
+and a foldable diagnostics panel.
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/jotuera/pentair-connectmysoftener-homeassistant/main/docs/images/card.png" width="360" alt="Pentair softener card">
+</p>
+
+The card is **served by the integration itself** — no Lovelace resource to add by hand.
+Just add it to a dashboard:
+
+```yaml
+type: custom:pentair-softener-card
+```
+
+Options (both optional):
+
+| Option | Description |
+|--------|-------------|
+| `device` | Device ID — pick one softener when you have several on the account |
+| `title` | Override the header text |
+
+It finds the integration's entities on its own (by platform and translation key), so the
+only thing you need is the line above. Water-usage tiles appear when the optional usage
+sensors are enabled; tiles for missing entities are hidden automatically.
+
+The card follows Home Assistant's language — English as the source, with built-in
+translations for **Polish, German, French, Dutch, Spanish, Italian, Romanian, Russian and
+Czech** (9 languages). Units (L / gal, g, L/min) come straight from the entities, so US and
+metric accounts are handled automatically.
+
+> If you prefer to manage it yourself, the file is also reachable as a Lovelace resource at
+> `/pentair_softener/pentair-softener-card.js`. A resource you add there (for example a newer
+> copy) takes precedence over the bundled one.
 
 ## Icon in the UI
 
