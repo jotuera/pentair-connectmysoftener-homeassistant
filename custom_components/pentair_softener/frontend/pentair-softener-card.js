@@ -7,9 +7,13 @@
  *
  *   type: custom:pentair-softener-card
  *
- * Optional:
- *   device: <device_id>   # pick one softener when you have several
- *   title:  "..."         # override the header text
+ * Options (all optional, also editable in the visual editor):
+ *   device:      <device_id>   pick one softener when you have several
+ *   title:       "..."         override the header text
+ *   confirm:     true|false    ask before Regenerate / Night regeneration (default true)
+ *   buttons:     true|false    show the action buttons (default true)
+ *   usage:       true|false    show the water-usage tiles (default true)
+ *   diagnostics: true|false    show the diagnostics toggle (default true)
  *
  * UI text follows Home Assistant's language: English is the source, with built-in
  * translations for Polish, German, French, Dutch, Spanish, Italian, Romanian,
@@ -21,47 +25,22 @@
 
 const T = {
   en: {
-    title: "Water softener",
-    remaining: "Remaining capacity",
-    status: "Status",
-    salt: "Salt",
-    ok: "OK",
-    low: "Low",
-    today: "Today",
-    week: "Week",
-    month: "Month",
-    year: "Year",
-    last_regen: "Last regen.",
-    regen_at: "Regeneration at",
-    salt_regen: "Salt / regen.",
-    btn_salt: "Salt added",
-    btn_regen: "Regenerate",
-    btn_night: "Night regen.",
-    flow: "Flow",
-    diag: "Diagnostics",
-    hidden: "hidden",
-    shown: "shown",
-    d_today: "today",
-    d_yesterday: "yesterday",
-    days: "days",
-    serial: "Serial number",
-    software: "Software",
-    total: "Total volume",
-    regens: "Regenerations",
-    last_service: "Last service",
-    warnings: "Warnings",
-    holiday: "Holiday mode",
-    hardness: "Water hardness",
-    devtime: "Device time",
-    online: "Online",
-    pending: "Pending changes",
-    yes: "Yes",
-    no: "No",
-    st_in_service: "In service",
-    st_regenerating: "Regenerating",
-    st_holiday: "Holiday",
-    st_standby: "Standby",
-    st_offline: "Offline",
+    title: "Water softener", remaining: "Remaining capacity", status: "Status",
+    salt: "Salt", ok: "OK", low: "Low", today: "Today", week: "Week",
+    month: "Month", year: "Year", last_regen: "Last regen.",
+    regen_at: "Regeneration at", salt_regen: "Salt / regen.", btn_salt: "Salt added",
+    btn_regen: "Regenerate", btn_night: "Night regen.", flow: "Flow",
+    diag: "Diagnostics", hidden: "hidden", shown: "shown", d_today: "today",
+    d_yesterday: "yesterday", days: "days", serial: "Serial number",
+    software: "Software", total: "Total volume", regens: "Regenerations",
+    last_service: "Last service", warnings: "Warnings", holiday: "Holiday mode",
+    hardness: "Water hardness", devtime: "Device time", online: "Online",
+    pending: "Pending changes", yes: "Yes", no: "No",
+    history: "History", confirm_q: "Sure?",
+    ed_title: "Title", ed_device: "Device", ed_confirm: "Confirm regeneration",
+    ed_buttons: "Show buttons", ed_usage: "Show water usage", ed_diag: "Show diagnostics",
+    st_in_service: "In service", st_regenerating: "Regenerating", st_holiday: "Holiday",
+    st_standby: "Standby", st_offline: "Offline",
   },
   pl: {
     title: "Zmiękczacz wody", remaining: "Pozostała pojemność", status: "Status",
@@ -75,6 +54,9 @@ const T = {
     last_service: "Ostatni serwis", warnings: "Ostrzeżenia", holiday: "Tryb urlopowy",
     hardness: "Twardość wody", devtime: "Czas urządzenia", online: "Online",
     pending: "Zmiany oczekujące", yes: "Tak", no: "Nie",
+    history: "Historia", confirm_q: "Na pewno?",
+    ed_title: "Tytuł", ed_device: "Urządzenie", ed_confirm: "Potwierdzaj regenerację",
+    ed_buttons: "Pokaż przyciski", ed_usage: "Pokaż zużycie wody", ed_diag: "Pokaż diagnostykę",
     st_in_service: "Czynny", st_regenerating: "Regeneracja", st_holiday: "Tryb urlopowy",
     st_standby: "Czuwanie", st_offline: "Offline",
   },
@@ -90,6 +72,9 @@ const T = {
     last_service: "Letzter Service", warnings: "Warnungen", holiday: "Urlaubsmodus",
     hardness: "Wasserhärte", devtime: "Gerätezeit", online: "Online",
     pending: "Ausstehende Änderungen", yes: "Ja", no: "Nein",
+    history: "Verlauf", confirm_q: "Sicher?",
+    ed_title: "Titel", ed_device: "Gerät", ed_confirm: "Regeneration bestätigen",
+    ed_buttons: "Tasten anzeigen", ed_usage: "Wasserverbrauch anzeigen", ed_diag: "Diagnose anzeigen",
     st_in_service: "In Betrieb", st_regenerating: "Regeneriert", st_holiday: "Urlaub",
     st_standby: "Standby", st_offline: "Offline",
   },
@@ -105,6 +90,9 @@ const T = {
     last_service: "Dernier entretien", warnings: "Alertes", holiday: "Mode vacances",
     hardness: "Dureté de l'eau", devtime: "Heure de l'appareil", online: "En ligne",
     pending: "Modifications en attente", yes: "Oui", no: "Non",
+    history: "Historique", confirm_q: "Confirmer ?",
+    ed_title: "Titre", ed_device: "Appareil", ed_confirm: "Confirmer la régénération",
+    ed_buttons: "Afficher les boutons", ed_usage: "Afficher la consommation", ed_diag: "Afficher le diagnostic",
     st_in_service: "En service", st_regenerating: "Régénération", st_holiday: "Vacances",
     st_standby: "Veille", st_offline: "Hors ligne",
   },
@@ -120,6 +108,9 @@ const T = {
     last_service: "Laatste service", warnings: "Waarschuwingen", holiday: "Vakantiemodus",
     hardness: "Waterhardheid", devtime: "Apparaattijd", online: "Online",
     pending: "Openstaande wijzigingen", yes: "Ja", no: "Nee",
+    history: "Geschiedenis", confirm_q: "Zeker?",
+    ed_title: "Titel", ed_device: "Apparaat", ed_confirm: "Regeneratie bevestigen",
+    ed_buttons: "Knoppen tonen", ed_usage: "Waterverbruik tonen", ed_diag: "Diagnostiek tonen",
     st_in_service: "In bedrijf", st_regenerating: "Regenereren", st_holiday: "Vakantie",
     st_standby: "Stand-by", st_offline: "Offline",
   },
@@ -135,6 +126,9 @@ const T = {
     last_service: "Último servicio", warnings: "Advertencias", holiday: "Modo vacaciones",
     hardness: "Dureza del agua", devtime: "Hora del equipo", online: "En línea",
     pending: "Cambios pendientes", yes: "Sí", no: "No",
+    history: "Historial", confirm_q: "¿Seguro?",
+    ed_title: "Título", ed_device: "Dispositivo", ed_confirm: "Confirmar regeneración",
+    ed_buttons: "Mostrar botones", ed_usage: "Mostrar consumo de agua", ed_diag: "Mostrar diagnóstico",
     st_in_service: "En servicio", st_regenerating: "Regenerando", st_holiday: "Vacaciones",
     st_standby: "En espera", st_offline: "Sin conexión",
   },
@@ -150,6 +144,9 @@ const T = {
     last_service: "Ultima manut.", warnings: "Avvisi", holiday: "Modalità vacanza",
     hardness: "Durezza acqua", devtime: "Ora dispositivo", online: "Online",
     pending: "Modifiche in sospeso", yes: "Sì", no: "No",
+    history: "Cronologia", confirm_q: "Sicuro?",
+    ed_title: "Titolo", ed_device: "Dispositivo", ed_confirm: "Conferma rigenerazione",
+    ed_buttons: "Mostra pulsanti", ed_usage: "Mostra consumo acqua", ed_diag: "Mostra diagnostica",
     st_in_service: "In servizio", st_regenerating: "Rigenerazione", st_holiday: "Vacanza",
     st_standby: "Standby", st_offline: "Offline",
   },
@@ -165,6 +162,9 @@ const T = {
     last_service: "Ultima revizie", warnings: "Avertismente", holiday: "Mod vacanță",
     hardness: "Duritatea apei", devtime: "Ora aparatului", online: "Conectat",
     pending: "Modificări în așteptare", yes: "Da", no: "Nu",
+    history: "Istoric", confirm_q: "Sigur?",
+    ed_title: "Titlu", ed_device: "Dispozitiv", ed_confirm: "Confirmă regenerarea",
+    ed_buttons: "Arată butoanele", ed_usage: "Arată consumul de apă", ed_diag: "Arată diagnosticul",
     st_in_service: "În funcțiune", st_regenerating: "Se regenerează", st_holiday: "Vacanță",
     st_standby: "Standby", st_offline: "Deconectat",
   },
@@ -180,6 +180,9 @@ const T = {
     last_service: "Последнее ТО", warnings: "Предупреждения", holiday: "Режим отпуска",
     hardness: "Жёсткость воды", devtime: "Время устройства", online: "В сети",
     pending: "Ожидающие изменения", yes: "Да", no: "Нет",
+    history: "История", confirm_q: "Точно?",
+    ed_title: "Заголовок", ed_device: "Устройство", ed_confirm: "Подтверждать регенерацию",
+    ed_buttons: "Показывать кнопки", ed_usage: "Показывать расход воды", ed_diag: "Показывать диагностику",
     st_in_service: "В работе", st_regenerating: "Регенерация", st_holiday: "Отпуск",
     st_standby: "Ожидание", st_offline: "Не в сети",
   },
@@ -195,10 +198,24 @@ const T = {
     last_service: "Poslední servis", warnings: "Varování", holiday: "Režim dovolené",
     hardness: "Tvrdost vody", devtime: "Čas zařízení", online: "Online",
     pending: "Čekající změny", yes: "Ano", no: "Ne",
+    history: "Historie", confirm_q: "Jistě?",
+    ed_title: "Název", ed_device: "Zařízení", ed_confirm: "Potvrzovat regeneraci",
+    ed_buttons: "Zobrazit tlačítka", ed_usage: "Zobrazit spotřebu vody", ed_diag: "Zobrazit diagnostiku",
     st_in_service: "V provozu", st_regenerating: "Regenerace", st_holiday: "Dovolená",
     st_standby: "Pohotovost", st_offline: "Offline",
   },
 };
+
+function lang(hass) {
+  const raw = String(hass?.locale?.language || hass?.language || "en")
+    .slice(0, 2)
+    .toLowerCase();
+  return T[raw] ? raw : "en";
+}
+function tr(hass, key) {
+  const l = lang(hass);
+  return (T[l] && T[l][key]) || T.en[key] || key;
+}
 
 const STATUS_KEY = {
   in_service: "st_in_service",
@@ -222,6 +239,8 @@ class PentairSoftenerCard extends HTMLElement {
   setConfig(config) {
     this._config = config || {};
     this._diag = false;
+    this._hist = false;
+    this._pending = null;
     this._root = null;
   }
 
@@ -233,25 +252,21 @@ class PentairSoftenerCard extends HTMLElement {
     return { type: "custom:pentair-softener-card" };
   }
 
+  static getConfigElement() {
+    return document.createElement("pentair-softener-card-editor");
+  }
+
   set hass(hass) {
     this._hass = hass;
     this._render();
   }
 
-  // ---- helpers -------------------------------------------------------------
-
   _lang() {
-    const raw = String(
-      this._hass?.locale?.language || this._hass?.language || "en"
-    )
-      .slice(0, 2)
-      .toLowerCase();
-    return T[raw] ? raw : "en";
+    return lang(this._hass);
   }
 
   _t(key) {
-    const lang = this._lang();
-    return (T[lang] && T[lang][key]) || T.en[key] || key;
+    return tr(this._hass, key);
   }
 
   // Map the integration's entities by their translation_key, so names stay
@@ -309,20 +324,37 @@ class PentairSoftenerCard extends HTMLElement {
   _ts(map, key) {
     const obj = this._state(map, key);
     if (!obj || UNAVAILABLE.has(String(obj.state).toLowerCase())) return "—";
-    const d = new Date(obj.state);
-    if (isNaN(d.getTime())) return obj.state;
-    const lang = this._lang();
+    return this._fmtRelative(obj.state);
+  }
+
+  _fmtRelative(value) {
+    const d = new Date(value);
+    if (isNaN(d.getTime())) return String(value);
+    const l = this._lang();
     const now = new Date();
     const sameDay = (a, b) =>
       a.getFullYear() === b.getFullYear() &&
       a.getMonth() === b.getMonth() &&
       a.getDate() === b.getDate();
-    const hm = d.toLocaleTimeString(lang, { hour: "2-digit", minute: "2-digit" });
+    const hm = d.toLocaleTimeString(l, { hour: "2-digit", minute: "2-digit" });
     const y = new Date(now);
     y.setDate(now.getDate() - 1);
     if (sameDay(d, now)) return `${this._t("d_today")} ${hm}`;
     if (sameDay(d, y)) return `${this._t("d_yesterday")} ${hm}`;
-    const date = d.toLocaleDateString(lang, { day: "2-digit", month: "2-digit" });
+    const date = d.toLocaleDateString(l, { day: "2-digit", month: "2-digit" });
+    return `${date} ${hm}`;
+  }
+
+  _fmtFull(value) {
+    const d = new Date(value);
+    if (isNaN(d.getTime())) return String(value);
+    const l = this._lang();
+    const date = d.toLocaleDateString(l, {
+      day: "2-digit",
+      month: "2-digit",
+      year: "2-digit",
+    });
+    const hm = d.toLocaleTimeString(l, { hour: "2-digit", minute: "2-digit" });
     return `${date} ${hm}`;
   }
 
@@ -337,7 +369,9 @@ class PentairSoftenerCard extends HTMLElement {
       this._root.addEventListener("click", (e) => this._onClick(e));
     }
 
+    const cfg = this._config;
     const map = this._entities();
+
     const statusObj = this._state(map, "status");
     const statusRaw = statusObj ? String(statusObj.state) : null;
     const statusLabel =
@@ -346,13 +380,27 @@ class PentairSoftenerCard extends HTMLElement {
         : statusRaw || "—";
     const statusIcon = (statusRaw && STATUS_ICON[statusRaw]) || "mdi:water";
 
+    const regen = statusRaw === "regenerating";
+    const holiday = statusRaw === "holiday";
+    const offline = statusRaw === "offline";
+
     const progress = this._num(this._state(map, "status_progress"));
     const pct = progress === null ? null : Math.max(0, Math.min(100, progress));
 
-    // hero subtitle
+    // state-aware hero
+    let heroTitle = this._t("remaining");
     let subtitle = "";
-    if (statusRaw === "regenerating") {
-      subtitle = this._t("st_regenerating");
+    if (regen) {
+      heroTitle = this._t("st_regenerating");
+      const extra = statusObj && statusObj.attributes && statusObj.attributes.extra;
+      subtitle = extra || this._t("st_regenerating");
+    } else if (holiday) {
+      heroTitle = this._t("st_holiday");
+      const d = this._num(this._state(map, "holiday_mode"));
+      subtitle = d ? `${d} ${this._t("days")}` : this._t("st_holiday");
+    } else if (offline) {
+      heroTitle = this._t("st_offline");
+      subtitle = this._t("st_offline");
     } else {
       const parts = [];
       if (this._has(map, "remaining_capacity"))
@@ -366,11 +414,23 @@ class PentairSoftenerCard extends HTMLElement {
       this._state(map, "salt_warning") &&
       String(this._state(map, "salt_warning").state) === "on";
 
-    const title = this._config.title || this._t("title");
+    // warnings banner
+    const warnObj = this._state(map, "warnings");
+    const warnCount = this._num(warnObj);
+    const warnList =
+      (warnObj && warnObj.attributes && warnObj.attributes.warnings) || [];
+    const warnText = warnList.filter(Boolean).join(" · ");
+    const warnBanner =
+      warnCount && warnCount > 0
+        ? `<div class="banner"><ha-icon icon="mdi:alert"></ha-icon><span>${esc(
+            warnText || this._t("warnings")
+          )}</span></div>`
+        : "";
 
+    const title = cfg.title || this._t("title");
+
+    // ---- tiles ----
     const tiles = [];
-
-    // status
     tiles.push(
       this._tile({
         icon: statusIcon,
@@ -379,7 +439,6 @@ class PentairSoftenerCard extends HTMLElement {
         entity: map.status,
       })
     );
-    // salt warning
     if (map.salt_warning) {
       tiles.push(
         this._tile({
@@ -391,25 +450,25 @@ class PentairSoftenerCard extends HTMLElement {
         })
       );
     }
-    // water usage (optional)
-    const usage = [
-      ["water_used_day", "today"],
-      ["water_used_week", "week"],
-      ["water_used_month", "month"],
-    ];
-    for (const [k, lbl] of usage) {
-      if (map[k]) {
-        tiles.push(
-          this._tile({
-            icon: "mdi:water",
-            value: this._valUnit(map, k),
-            label: this._t(lbl),
-            entity: map[k],
-          })
-        );
+    if (cfg.usage !== false) {
+      const usage = [
+        ["water_used_day", "today"],
+        ["water_used_week", "week"],
+        ["water_used_month", "month"],
+      ];
+      for (const [k, lbl] of usage) {
+        if (map[k]) {
+          tiles.push(
+            this._tile({
+              icon: "mdi:water",
+              value: this._valUnit(map, k),
+              label: this._t(lbl),
+              entity: map[k],
+            })
+          );
+        }
       }
     }
-    // last regeneration
     if (map.last_regeneration) {
       tiles.push(
         this._tile({
@@ -420,7 +479,6 @@ class PentairSoftenerCard extends HTMLElement {
         })
       );
     }
-    // regeneration time
     if (map.regeneration_time) {
       tiles.push(
         this._tile({
@@ -431,7 +489,6 @@ class PentairSoftenerCard extends HTMLElement {
         })
       );
     }
-    // salt used / regen
     if (map.salt_used) {
       tiles.push(
         this._tile({
@@ -443,52 +500,77 @@ class PentairSoftenerCard extends HTMLElement {
       );
     }
 
-    // buttons
+    // ---- buttons ----
+    const needConfirm = cfg.confirm !== false;
     const buttons = [];
-    if (map.salt_added)
-      buttons.push(this._btn("mdi:shaker-outline", this._t("btn_salt"), map.salt_added));
-    if (map.regenerate_now)
-      buttons.push(this._btn("mdi:refresh", this._t("btn_regen"), map.regenerate_now));
-    if (map.regenerate_scheduled)
-      buttons.push(
-        this._btn("mdi:weather-night", this._t("btn_night"), map.regenerate_scheduled)
-      );
+    if (cfg.buttons !== false) {
+      if (map.salt_added)
+        buttons.push(this._btn("mdi:shaker-outline", this._t("btn_salt"), map.salt_added, false));
+      if (map.regenerate_now)
+        buttons.push(this._btn("mdi:refresh", this._t("btn_regen"), map.regenerate_now, needConfirm));
+      if (map.regenerate_scheduled)
+        buttons.push(
+          this._btn("mdi:weather-night", this._t("btn_night"), map.regenerate_scheduled, needConfirm)
+        );
+    }
 
-    // flow + diagnostics toggle
+    // ---- bottom row (flow + toggles) ----
     const bottom = [];
     if (map.current_flow) {
+      const flowing = (this._num(this._state(map, "current_flow")) || 0) > 0;
       bottom.push(
         this._tile({
           icon: "mdi:waves-arrow-right",
           value: this._valUnit(map, "current_flow"),
           label: this._t("flow"),
+          cls: flowing ? "flowing" : "",
           entity: map.current_flow,
         })
       );
     }
-    bottom.push(
-      this._tile({
-        icon: "mdi:wrench",
-        value: this._diag ? this._t("shown") : this._t("hidden"),
-        label: this._t("diag"),
-        cls: "action",
-        action: "toggle-diag",
-      })
-    );
+    const histList =
+      (this._state(map, "salt_used") &&
+        this._state(map, "salt_used").attributes &&
+        this._state(map, "salt_used").attributes.history) ||
+      [];
+    if (histList.length) {
+      bottom.push(
+        this._tile({
+          icon: "mdi:format-list-bulleted",
+          value: this._hist ? this._t("shown") : this._t("hidden"),
+          label: this._t("history"),
+          cls: "action",
+          action: "toggle-hist",
+        })
+      );
+    }
+    if (cfg.diagnostics !== false) {
+      bottom.push(
+        this._tile({
+          icon: "mdi:wrench",
+          value: this._diag ? this._t("shown") : this._t("hidden"),
+          label: this._t("diag"),
+          cls: "action",
+          action: "toggle-diag",
+        })
+      );
+    }
 
-    const diagHtml = this._diag ? this._diagPanel(map) : "";
+    const histHtml = this._hist && histList.length ? this._histPanel(map, histList) : "";
+    const diagHtml = this._diag && cfg.diagnostics !== false ? this._diagPanel(map) : "";
 
     this._root.innerHTML = `
       <div class="head">
         <ha-icon icon="mdi:water-outline"></ha-icon>
         <span>${esc(title)}</span>
       </div>
-      <div class="hero${saltLow ? " warn" : ""}">
+      ${warnBanner}
+      <div class="hero${saltLow || offline ? " warn" : ""}">
         <div class="hero-top">
           <div class="hero-label">
             <ha-icon icon="mdi:water-percent"></ha-icon>
             <div>
-              <div class="hero-title">${esc(this._t("remaining"))}</div>
+              <div class="hero-title">${esc(heroTitle)}</div>
               <div class="hero-sub">${esc(subtitle || "—")}</div>
             </div>
           </div>
@@ -498,7 +580,8 @@ class PentairSoftenerCard extends HTMLElement {
       </div>
       <div class="grid">${tiles.join("")}</div>
       ${buttons.length ? `<div class="btns">${buttons.join("")}</div>` : ""}
-      <div class="grid bottom">${bottom.join("")}</div>
+      ${bottom.length ? `<div class="grid bottom">${bottom.join("")}</div>` : ""}
+      ${histHtml}
       ${diagHtml}
     `;
   }
@@ -518,12 +601,38 @@ class PentairSoftenerCard extends HTMLElement {
       </div>`;
   }
 
-  _btn(icon, label, entity) {
+  _btn(icon, label, entity, needConfirm) {
+    const confAttr = needConfirm ? ' data-confirm="1"' : "";
+    if (needConfirm && this._pending === entity) {
+      return `
+        <button class="pbtn confirm" data-action="press" data-entity="${entity}"${confAttr}>
+          <ha-icon icon="mdi:check-bold"></ha-icon>
+          <span>${esc(this._t("confirm_q"))}</span>
+        </button>`;
+    }
     return `
-      <button class="pbtn" data-action="press" data-entity="${entity}">
+      <button class="pbtn" data-action="press" data-entity="${entity}"${confAttr}>
         <ha-icon icon="${icon}"></ha-icon>
         <span>${esc(label)}</span>
       </button>`;
+  }
+
+  _histPanel(map, hist) {
+    const unit =
+      (this._state(map, "salt_used") &&
+        this._state(map, "salt_used").attributes &&
+        this._state(map, "salt_used").attributes.unit_of_measurement) ||
+      "";
+    const rows = hist.map((r) => {
+      const salt =
+        r.salt_used === null || r.salt_used === undefined ? "—" : r.salt_used;
+      const pctStr =
+        r.percentage === null || r.percentage === undefined ? "" : ` · ${r.percentage}%`;
+      return `<div class="drow"><span>${esc(this._fmtFull(r.datetime))}</span><b>${esc(
+        unit ? `${salt} ${unit}` : `${salt}`
+      )}${esc(pctStr)}</b></div>`;
+    });
+    return `<div class="panel">${rows.join("")}</div>`;
   }
 
   _diagPanel(map) {
@@ -548,7 +657,7 @@ class PentairSoftenerCard extends HTMLElement {
       const on = String(this._state(map, "online").state) === "on";
       add(this._t("online"), on ? this._t("yes") : this._t("no"));
     }
-    return `<div class="diag">${rows.join("")}</div>`;
+    return `<div class="panel">${rows.join("")}</div>`;
   }
 
   _stateText(map, key) {
@@ -559,17 +668,45 @@ class PentairSoftenerCard extends HTMLElement {
 
   _onClick(e) {
     const el = e.target.closest("[data-action]");
-    if (!el) return;
+    if (!el) {
+      // click elsewhere cancels a pending confirmation
+      if (this._pending) {
+        this._pending = null;
+        clearTimeout(this._pendingT);
+        this._render();
+      }
+      return;
+    }
     const action = el.getAttribute("data-action");
     if (action === "toggle-diag") {
       this._diag = !this._diag;
       this._render();
       return;
     }
+    if (action === "toggle-hist") {
+      this._hist = !this._hist;
+      this._render();
+      return;
+    }
     const entity = el.getAttribute("data-entity");
     if (!entity) return;
     if (action === "press") {
+      const needConfirm = el.hasAttribute("data-confirm");
+      if (needConfirm && this._pending !== entity) {
+        // first tap: arm confirmation, auto-cancel after a few seconds
+        this._pending = entity;
+        clearTimeout(this._pendingT);
+        this._pendingT = setTimeout(() => {
+          this._pending = null;
+          this._render();
+        }, 4000);
+        this._render();
+        return;
+      }
+      clearTimeout(this._pendingT);
+      this._pending = null;
       this._hass.callService("button", "press", { entity_id: entity });
+      this._render();
     } else if (action === "more-info") {
       this.dispatchEvent(
         new CustomEvent("hass-more-info", {
@@ -579,6 +716,56 @@ class PentairSoftenerCard extends HTMLElement {
         })
       );
     }
+  }
+}
+
+// ---- visual config editor ---------------------------------------------------
+
+class PentairSoftenerCardEditor extends HTMLElement {
+  setConfig(config) {
+    this._config = Object.assign({}, config);
+    this._render();
+  }
+
+  set hass(hass) {
+    this._hass = hass;
+    this._render();
+  }
+
+  _render() {
+    if (!this._hass) return;
+    if (!this._form) {
+      this._form = document.createElement("ha-form");
+      this._form.addEventListener("value-changed", (e) => {
+        e.stopPropagation();
+        this.dispatchEvent(
+          new CustomEvent("config-changed", { detail: { config: e.detail.value } })
+        );
+      });
+      this.appendChild(this._form);
+    }
+    this._form.hass = this._hass;
+    this._form.data = Object.assign(
+      { confirm: true, buttons: true, usage: true, diagnostics: true },
+      this._config
+    );
+    this._form.schema = [
+      { name: "title", selector: { text: {} } },
+      { name: "device", selector: { device: { integration: "pentair_softener" } } },
+      { name: "confirm", selector: { boolean: {} } },
+      { name: "buttons", selector: { boolean: {} } },
+      { name: "usage", selector: { boolean: {} } },
+      { name: "diagnostics", selector: { boolean: {} } },
+    ];
+    this._form.computeLabel = (s) =>
+      ({
+        title: tr(this._hass, "ed_title"),
+        device: tr(this._hass, "ed_device"),
+        confirm: tr(this._hass, "ed_confirm"),
+        buttons: tr(this._hass, "ed_buttons"),
+        usage: tr(this._hass, "ed_usage"),
+        diagnostics: tr(this._hass, "ed_diag"),
+      }[s.name] || s.name);
   }
 }
 
@@ -599,6 +786,14 @@ ha-icon { --mdc-icon-size: 20px; }
   margin-bottom: 12px;
 }
 .head ha-icon { color: var(--primary-color); }
+.banner {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 12px; margin-bottom: 12px; border-radius: 12px;
+  background: color-mix(in srgb, var(--warning-color, #ff9800) 16%, transparent);
+  border: 1px solid var(--warning-color, #ff9800);
+  color: var(--primary-text-color); font-size: 0.86rem;
+}
+.banner ha-icon { color: var(--warning-color, #ff9800); flex: none; }
 .hero {
   border-radius: 14px; padding: 14px 16px; margin-bottom: 12px;
   background: var(--secondary-background-color);
@@ -639,6 +834,8 @@ ha-icon { --mdc-icon-size: 20px; }
 .tile.good ha-icon { color: var(--success-color, #2ec27e); }
 .tile.warn ha-icon, .tile.warn .tile-val { color: var(--warning-color, #ff9800); }
 .tile.action ha-icon { color: var(--secondary-text-color); }
+.tile.flowing ha-icon { color: var(--info-color, #39b0e5); animation: pulse 1.4s ease-in-out infinite; }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
 .tile-val { font-size: 0.95rem; font-weight: 600; color: var(--primary-text-color); line-height: 1.15; }
 .tile-lbl { font-size: 0.72rem; color: var(--secondary-text-color); }
 .btns { display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); margin-top: 8px; }
@@ -650,14 +847,21 @@ ha-icon { --mdc-icon-size: 20px; }
   color: var(--primary-text-color);
   font-size: 0.8rem; font-weight: 600; letter-spacing: 0.02em;
   text-transform: uppercase; font-family: inherit;
+  transition: border-color 0.15s, background 0.15s;
 }
 .pbtn ha-icon { color: var(--primary-color); }
 .pbtn:hover { border-color: var(--primary-color); }
 .pbtn:active { transform: scale(0.98); }
-.diag {
+.pbtn.confirm {
+  border-color: var(--warning-color, #ff9800);
+  background: color-mix(in srgb, var(--warning-color, #ff9800) 16%, transparent);
+}
+.pbtn.confirm ha-icon { color: var(--warning-color, #ff9800); }
+.panel {
   margin-top: 10px; border-radius: 12px; padding: 4px 12px;
   background: var(--secondary-background-color);
   border: 1px solid var(--divider-color);
+  max-height: 260px; overflow: auto;
 }
 .drow { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; font-size: 0.86rem; }
 .drow + .drow { border-top: 1px solid var(--divider-color); }
@@ -668,6 +872,9 @@ ha-icon { --mdc-icon-size: 20px; }
 if (!customElements.get("pentair-softener-card")) {
   customElements.define("pentair-softener-card", PentairSoftenerCard);
 }
+if (!customElements.get("pentair-softener-card-editor")) {
+  customElements.define("pentair-softener-card-editor", PentairSoftenerCardEditor);
+}
 
 window.customCards = window.customCards || [];
 if (!window.customCards.some((c) => c.type === "pentair-softener-card")) {
@@ -676,6 +883,8 @@ if (!window.customCards.some((c) => c.type === "pentair-softener-card")) {
     name: "Pentair ConnectMySoftener",
     description: "Dashboard card for the Pentair water softener integration.",
     preview: false,
+    documentationURL:
+      "https://github.com/jotuera/pentair-connectmysoftener-homeassistant",
   });
 }
 

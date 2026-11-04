@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://github.com/hacs/integration"><img src="https://img.shields.io/badge/HACS-Custom-41BDF5.svg" alt="HACS Custom"></a>
-  <img src="https://img.shields.io/badge/version-0.11.0-blue.svg" alt="Version">
+  <img src="https://img.shields.io/badge/version-0.12.0-blue.svg" alt="Version">
   <img src="https://img.shields.io/badge/HA-2023.1%2B-41BDF5.svg" alt="Home Assistant">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License: MIT"></a>
   <a href="https://buymeacoffee.com/jotuera"><img src="https://img.shields.io/badge/Buy%20me%20a%20coffee-jotuera-FFDD00?logo=buymeacoffee&logoColor=black" alt="Buy Me a Coffee"></a>
@@ -258,22 +258,38 @@ and a foldable diagnostics panel.
 </p>
 
 The card is **served by the integration itself** — no Lovelace resource to add by hand.
-Just add it to a dashboard:
+Add it from the dashboard with **Add card → search "Pentair"** (it has a **visual editor**),
+or in YAML:
 
 ```yaml
 type: custom:pentair-softener-card
 ```
 
-Options (both optional):
+Options (all optional, also in the visual editor):
 
-| Option | Description |
-|--------|-------------|
-| `device` | Device ID — pick one softener when you have several on the account |
-| `title` | Override the header text |
+| Option | Default | Description |
+|--------|---------|-------------|
+| `device` | first softener | Device ID — pick one softener when you have several on the account |
+| `title` | localized | Override the header text |
+| `confirm` | `true` | Ask before **Regenerate** / **Night regeneration** (two-tap confirm) |
+| `buttons` | `true` | Show the action buttons |
+| `usage` | `true` | Show the water-usage tiles |
+| `diagnostics` | `true` | Show the diagnostics toggle |
 
 It finds the integration's entities on its own (by platform and translation key), so the
 only thing you need is the line above. Water-usage tiles appear when the optional usage
 sensors are enabled; tiles for missing entities are hidden automatically.
+
+More features:
+
+- **Two-tap confirmation** on *Regenerate* / *Night regeneration* — one tap arms the button
+  (*Sure?*), a second confirms; it reverts after a few seconds. *Salt added* fires directly.
+- **Regeneration history** — a foldable *History* panel (date / salt / %), from the app's
+  History screen, when the `Salt used` sensor carries its history attribute.
+- **State-aware header** — shows the regeneration progress and remaining time while
+  regenerating, the days left in holiday mode, and a **warning banner** when the appliance
+  reports one (low salt, service due …).
+- Tap any tile to open its entity's more-info dialog.
 
 The card follows Home Assistant's language — English as the source, with built-in
 translations for **Polish, German, French, Dutch, Spanish, Italian, Romanian, Russian and
