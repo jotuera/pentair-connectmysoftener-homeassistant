@@ -1,0 +1,68 @@
+name: Bug report
+description: Something does not work as expected
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting! Please fill in as much as you can — it makes the problem much faster to find.
+        Never paste your password, e-mail or serial number here.
+  - type: input
+    id: model
+    attributes:
+      label: Softener model
+      description: As printed on the appliance, e.g. "Supreme Soft 20W", "IQ Soft 26", "Softena 20".
+      placeholder: Supreme Soft 20W
+    validations:
+      required: true
+  - type: dropdown
+    id: serial_format
+    attributes:
+      label: Serial number format
+      description: Only the format, not the number itself.
+      options:
+        - "S-######## (starts with S)"
+        - "#####-###### (letter + digits, with a dash)"
+        - "I don't know"
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Integration version
+      placeholder: v0.13.0
+    validations:
+      required: true
+  - type: input
+    id: ha_version
+    attributes:
+      label: Home Assistant version
+      placeholder: "2026.11.0"
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: What did you expect, and what happened instead? Which entity is affected?
+    validations:
+      required: true
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Diagnostics
+      description: |
+        Settings → Devices & services → Pentair ConnectMySoftener → ⋮ → **Download diagnostics**.
+        Personal data is removed automatically. Drag the file here or paste its content.
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: |
+        Relevant lines from Settings → System → Logs. For more detail add to `configuration.yaml`:
+        ```yaml
+        logger:
+          logs:
+            custom_components.pentair_softener: debug
+        ```
+      render: text

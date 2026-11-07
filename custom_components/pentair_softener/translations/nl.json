@@ -8,6 +8,20 @@
           "email": "E-mail",
           "password": "Wachtwoord"
         }
+      },
+      "reauth_confirm": {
+        "title": "Opnieuw aanmelden",
+        "description": "De ConnectMySoftener-cloud heeft het opgeslagen wachtwoord voor {email} geweigerd. Voer het huidige wachtwoord in.",
+        "data": {
+          "password": "Wachtwoord"
+        }
+      },
+      "reconfigure": {
+        "title": "Wachtwoord wijzigen",
+        "description": "Voer het huidige ConnectMySoftener-wachtwoord voor {email} in.",
+        "data": {
+          "password": "Wachtwoord"
+        }
       }
     },
     "error": {
@@ -16,7 +30,9 @@
       "unknown": "Onverwachte fout."
     },
     "abort": {
-      "already_configured": "Dit account is al geconfigureerd."
+      "already_configured": "Dit account is al geconfigureerd.",
+      "reauth_successful": "Opnieuw aangemeld. De integratie is herladen.",
+      "reconfigure_successful": "Wachtwoord bijgewerkt. De integratie is herladen."
     }
   },
   "options": {
@@ -121,6 +137,23 @@
       },
       "holiday_mode": {
         "name": "Vakantiemodus"
+      },
+      "recharge_interval": {
+        "name": "Regeneratie-interval"
+      },
+      "recharge_interval_oxy": {
+        "name": "Regeneratie-interval (oxy)"
+      }
+    },
+    "switch": {
+      "daily_recharge": {
+        "name": "Dagelijkse regeneratie"
+      },
+      "salt_alarm_notification": {
+        "name": "Melding zoutalarm"
+      },
+      "maintenance_notification": {
+        "name": "Melding onderhoud"
       }
     },
     "time": {

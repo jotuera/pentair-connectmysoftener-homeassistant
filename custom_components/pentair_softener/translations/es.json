@@ -8,6 +8,20 @@
           "email": "Correo electrónico",
           "password": "Contraseña"
         }
+      },
+      "reauth_confirm": {
+        "title": "Volver a iniciar sesión",
+        "description": "La nube de ConnectMySoftener rechazó la contraseña guardada para {email}. Introduce la contraseña actual.",
+        "data": {
+          "password": "Contraseña"
+        }
+      },
+      "reconfigure": {
+        "title": "Cambiar contraseña",
+        "description": "Introduce la contraseña actual de ConnectMySoftener para {email}.",
+        "data": {
+          "password": "Contraseña"
+        }
       }
     },
     "error": {
@@ -16,7 +30,9 @@
       "unknown": "Error inesperado."
     },
     "abort": {
-      "already_configured": "Esta cuenta ya está configurada."
+      "already_configured": "Esta cuenta ya está configurada.",
+      "reauth_successful": "Sesión iniciada de nuevo. La integración se ha recargado.",
+      "reconfigure_successful": "Contraseña actualizada. La integración se ha recargado."
     }
   },
   "options": {
@@ -121,6 +137,23 @@
       },
       "holiday_mode": {
         "name": "Modo de vacaciones"
+      },
+      "recharge_interval": {
+        "name": "Intervalo de regeneración"
+      },
+      "recharge_interval_oxy": {
+        "name": "Intervalo de regeneración (oxy)"
+      }
+    },
+    "switch": {
+      "daily_recharge": {
+        "name": "Regeneración diaria"
+      },
+      "salt_alarm_notification": {
+        "name": "Notificación de alarma de sal"
+      },
+      "maintenance_notification": {
+        "name": "Notificación de mantenimiento"
       }
     },
     "time": {

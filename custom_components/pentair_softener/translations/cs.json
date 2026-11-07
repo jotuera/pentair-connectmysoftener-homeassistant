@@ -8,6 +8,20 @@
           "email": "E-mail",
           "password": "Heslo"
         }
+      },
+      "reauth_confirm": {
+        "title": "Znovu se přihlásit",
+        "description": "Cloud ConnectMySoftener odmítl uložené heslo pro {email}. Zadejte aktuální heslo.",
+        "data": {
+          "password": "Heslo"
+        }
+      },
+      "reconfigure": {
+        "title": "Změnit heslo",
+        "description": "Zadejte aktuální heslo ConnectMySoftener pro {email}.",
+        "data": {
+          "password": "Heslo"
+        }
       }
     },
     "error": {
@@ -16,7 +30,9 @@
       "unknown": "Neočekávaná chyba."
     },
     "abort": {
-      "already_configured": "Tento účet je již nakonfigurován."
+      "already_configured": "Tento účet je již nakonfigurován.",
+      "reauth_successful": "Znovu přihlášeno. Integrace byla znovu načtena.",
+      "reconfigure_successful": "Heslo bylo aktualizováno. Integrace byla znovu načtena."
     }
   },
   "options": {
@@ -121,6 +137,23 @@
       },
       "holiday_mode": {
         "name": "Režim dovolené"
+      },
+      "recharge_interval": {
+        "name": "Interval regenerace"
+      },
+      "recharge_interval_oxy": {
+        "name": "Interval regenerace (oxy)"
+      }
+    },
+    "switch": {
+      "daily_recharge": {
+        "name": "Denní regenerace"
+      },
+      "salt_alarm_notification": {
+        "name": "Upozornění na sůl"
+      },
+      "maintenance_notification": {
+        "name": "Upozornění na údržbu"
       }
     },
     "time": {

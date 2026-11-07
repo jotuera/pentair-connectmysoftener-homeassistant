@@ -1,31 +1,27 @@
 from __future__ import annotations
 
-from datetime import timedelta
+import asyncio
+from dataclasses import dataclass
 import logging
 from pathlib import Path
-from typing import Any
 
 from homeassistant.components import frontend
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryNotReady
+from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from homeassistant.helpers.update_coordinator import (
-    DataUpdateCoordinator,
-    UpdateFailed,
-)
 from homeassistant.loader import async_get_integration
-from homeassistant.util import dt as dt_util
 
+from .api import PentairApi, PentairApiError, PentairAuthError, PentairDevice
 from .const import (
-    DOMAIN,
     CONF_EMAIL,
     CONF_PASSWORD,
-    CONF_ENABLE_GRAPHS,
-    DEFAULT_ENABLE_GRAPHS,
-    GRAPH_INTERVALS,
+    CONF_PRIMARY_DEVICE_ID,
+    DOMAIN,
     PLATFORMS,
 )
-from .api import PentairApi, PentairApiError, PentairAuthError
+from .coordinator import PentairCoordinator
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -37,6 +33,17 @@ CARD_URL = f"/{DOMAIN}/pentair-softener-card.js"
 CARD_FILE = Path(__file__).parent / "frontend" / "pentair-softener-card.js"
 LOADER_URL = f"/{DOMAIN}/pentair-softener-loader.js"
 LOADER_FILE = Path(__file__).parent / "frontend" / "pentair-softener-loader.js"
+
+
+@dataclass
+class PentairRuntimeData:
+    """Dane wpisu konfiguracji: klient konta i koordynator na każde urządzenie."""
+
+    api: PentairApi
+    coordinators: list[PentairCoordinator]
+
+
+PentairConfigEntry = ConfigEntry  # ConfigEntry[PentairRuntimeData] w nowszych HA
 
 
 async def _async_register_card(hass: HomeAssistant, version: str | None) -> None:
@@ -63,91 +70,51 @@ async def _async_register_card(hass: HomeAssistant, version: str | None) -> None
     frontend.add_extra_js_url(hass, f"{LOADER_URL}?v={version or '0'}")
 
 
-class PentairCoordinator(DataUpdateCoordinator[dict[str, Any]]):
-    """Koordynator pobierający dane ze zmiękczacza Pentair."""
-
-    def __init__(
-        self, hass: HomeAssistant, api: PentairApi, entry: ConfigEntry
-    ) -> None:
-        super().__init__(
-            hass,
-            _LOGGER,
-            name="Pentair softener coordinator",
-            update_interval=timedelta(seconds=90),
-        )
-        self.api = api
-        self.entry = entry
-
-    async def _async_update_data(self) -> dict[str, Any]:
-        """Pobierz najnowsze dane z API.
-
-        Krytyczny jest tylko dashboard (potrzebny m.in. do device_id). Pozostałe
-        endpointy (flow/info/settings/graphs) są opcjonalne — ich brak nie może
-        blokować utworzenia urządzenia ani całego odświeżania."""
-        try:
-            dashboard = await self.api.get_dashboard()
-        except (PentairApiError, PentairAuthError) as err:
-            raise UpdateFailed(f"Error communicating with Pentair API: {err}") from err
-
-        data: dict[str, Any] = {
-            "dashboard": dashboard,
-            "flow": await self._safe(self.api.get_flow, "flow"),
-            "info": await self._safe(self.api.get_info, "info"),
-            "settings": await self._safe(self.api.get_settings, "settings"),
-            "regenerations": await self._safe(
-                self.api.get_regenerations, "regenerations", default=[]
-            ),
-            "pending": await self._safe(self.api.get_pending, "pending", default=[]),
-        }
-
-        if self.entry.options.get(CONF_ENABLE_GRAPHS, DEFAULT_ENABLE_GRAPHS):
-            data["usage"] = await self._fetch_usage()
-
-        return data
-
-    async def _fetch_usage(self) -> dict[str, float | None]:
-        """Pobierz historię zużycia wody z /graphs (day/week/month/year)."""
-        tz = self.hass.config.time_zone or "UTC"
-        now = dt_util.now()
-        usage: dict[str, float | None] = {}
-        for interval in GRAPH_INTERVALS:
-            try:
-                usage[interval] = await self.api.get_usage(interval, now, tz)
-            except (PentairApiError, PentairAuthError) as err:
-                _LOGGER.debug("Pentair: usage %s unavailable: %s", interval, err)
-                usage[interval] = None
-        return usage
-
-    async def _safe(self, coro_func, name: str, default: Any = None) -> Any:
-        """Wywołaj opcjonalny endpoint; przy błędzie zaloguj i zwróć wartość domyślną."""
-        try:
-            return await coro_func()
-        except (PentairApiError, PentairAuthError) as err:
-            _LOGGER.debug("Pentair: %s unavailable: %s", name, err)
-            return {} if default is None else default
-
-
-async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Set up Pentair softener from a config entry."""
+async def async_setup_entry(hass: HomeAssistant, entry: PentairConfigEntry) -> bool:
+    """Set up Pentair softener(s) from a config entry."""
     session = async_get_clientsession(hass)
+    api = PentairApi(
+        session, email=entry.data[CONF_EMAIL], password=entry.data[CONF_PASSWORD]
+    )
 
-    email: str = entry.data[CONF_EMAIL]
-    password: str = entry.data[CONF_PASSWORD]
+    try:
+        profiles = await api.get_devices()
+    except PentairAuthError as err:
+        raise ConfigEntryAuthFailed(str(err)) from err
+    except PentairApiError as err:
+        raise ConfigEntryNotReady(str(err)) from err
 
-    api = PentairApi(session, email=email, password=password)
+    # Urządzenie obsługiwane przed wersją z wieloma zmiękczaczami zachowuje
+    # dotychczasowe unique_id encji i identyfikator w rejestrze urządzeń.
+    primary_id = entry.data.get(CONF_PRIMARY_DEVICE_ID)
+    if primary_id is None:
+        primary_id = str(profiles[0]["id"])
+        hass.config_entries.async_update_entry(
+            entry, data={**entry.data, CONF_PRIMARY_DEVICE_ID: primary_id}
+        )
 
-    coordinator = PentairCoordinator(hass, api, entry)
-    await coordinator.async_config_entry_first_refresh()
+    coordinators: list[PentairCoordinator] = []
+    for profile in profiles:
+        device = PentairDevice(api, profile)
+        if device.device_id == primary_id:
+            prefix = entry.entry_id
+        else:
+            prefix = f"{entry.entry_id}_{device.device_id}"
+        coordinators.append(
+            PentairCoordinator(
+                hass, entry, device, unique_prefix=prefix, fallback_identifier=prefix
+            )
+        )
+
+    await asyncio.gather(
+        *(c.async_config_entry_first_refresh() for c in coordinators)
+    )
 
     integration = await async_get_integration(hass, DOMAIN)
     version = str(integration.version) if integration.version else None
     await _async_register_card(hass, version)
 
-    hass.data.setdefault(DOMAIN, {})
-    hass.data[DOMAIN][entry.entry_id] = {
-        "api": api,
-        "coordinator": coordinator,
-    }
+    entry.runtime_data = PentairRuntimeData(api=api, coordinators=coordinators)
 
     # Przeładuj wpis po zmianie opcji (np. włączenie historii zużycia).
     entry.async_on_unload(entry.add_update_listener(_async_update_listener))
@@ -161,9 +128,17 @@ async def _async_update_listener(hass: HomeAssistant, entry: ConfigEntry) -> Non
     await hass.config_entries.async_reload(entry.entry_id)
 
 
-async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+async def async_unload_entry(hass: HomeAssistant, entry: PentairConfigEntry) -> bool:
     """Unload a config entry."""
-    unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
-    if unload_ok and entry.entry_id in hass.data.get(DOMAIN, {}):
-        hass.data[DOMAIN].pop(entry.entry_id)
-    return unload_ok
+    return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
+
+
+async def async_remove_config_entry_device(
+    hass: HomeAssistant, entry: PentairConfigEntry, device_entry: dr.DeviceEntry
+) -> bool:
+    """Pozwól usunąć urządzenie, którego nie ma już na koncie ConnectMySoftener."""
+    runtime: PentairRuntimeData | None = getattr(entry, "runtime_data", None)
+    if runtime is None:
+        return True
+    active = {(DOMAIN, c.device_identifier) for c in runtime.coordinators}
+    return not (device_entry.identifiers & active)

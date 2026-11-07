@@ -8,6 +8,20 @@
           "email": "E-mail",
           "password": "Hasło"
         }
+      },
+      "reauth_confirm": {
+        "title": "Zaloguj się ponownie",
+        "description": "Chmura ConnectMySoftener odrzuciła zapisane hasło dla {email}. Wpisz aktualne hasło.",
+        "data": {
+          "password": "Hasło"
+        }
+      },
+      "reconfigure": {
+        "title": "Zmień hasło",
+        "description": "Wpisz aktualne hasło do ConnectMySoftener dla {email}.",
+        "data": {
+          "password": "Hasło"
+        }
       }
     },
     "error": {
@@ -16,7 +30,9 @@
       "unknown": "Nieoczekiwany błąd."
     },
     "abort": {
-      "already_configured": "To konto jest już skonfigurowane."
+      "already_configured": "To konto jest już skonfigurowane.",
+      "reauth_successful": "Zalogowano ponownie. Integracja została przeładowana.",
+      "reconfigure_successful": "Hasło zaktualizowane. Integracja została przeładowana."
     }
   },
   "options": {
@@ -121,6 +137,23 @@
       },
       "holiday_mode": {
         "name": "Tryb urlopowy"
+      },
+      "recharge_interval": {
+        "name": "Interwał regeneracji"
+      },
+      "recharge_interval_oxy": {
+        "name": "Interwał regeneracji (oxy)"
+      }
+    },
+    "switch": {
+      "daily_recharge": {
+        "name": "Codzienna regeneracja"
+      },
+      "salt_alarm_notification": {
+        "name": "Powiadomienie o braku soli"
+      },
+      "maintenance_notification": {
+        "name": "Powiadomienie o konserwacji"
       }
     },
     "time": {

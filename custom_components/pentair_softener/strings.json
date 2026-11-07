@@ -8,6 +8,20 @@
           "email": "E-mail",
           "password": "Password"
         }
+      },
+      "reauth_confirm": {
+        "title": "Sign in again",
+        "description": "The ConnectMySoftener cloud rejected the saved password for {email}. Enter the current password.",
+        "data": {
+          "password": "Password"
+        }
+      },
+      "reconfigure": {
+        "title": "Change password",
+        "description": "Enter the current ConnectMySoftener password for {email}.",
+        "data": {
+          "password": "Password"
+        }
       }
     },
     "error": {
@@ -16,7 +30,9 @@
       "unknown": "Unexpected error."
     },
     "abort": {
-      "already_configured": "This account is already configured."
+      "already_configured": "This account is already configured.",
+      "reauth_successful": "Signed in again. The integration has been reloaded.",
+      "reconfigure_successful": "Password updated. The integration has been reloaded."
     }
   },
   "options": {
@@ -121,6 +137,23 @@
       },
       "holiday_mode": {
         "name": "Holiday Mode"
+      },
+      "recharge_interval": {
+        "name": "Recharge interval"
+      },
+      "recharge_interval_oxy": {
+        "name": "Oxy recharge interval"
+      }
+    },
+    "switch": {
+      "daily_recharge": {
+        "name": "Daily recharge"
+      },
+      "salt_alarm_notification": {
+        "name": "Salt alarm notification"
+      },
+      "maintenance_notification": {
+        "name": "Maintenance notification"
       }
     },
     "time": {

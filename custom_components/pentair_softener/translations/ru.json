@@ -8,6 +8,20 @@
           "email": "Эл. почта",
           "password": "Пароль"
         }
+      },
+      "reauth_confirm": {
+        "title": "Повторный вход",
+        "description": "Облако ConnectMySoftener отклонило сохранённый пароль для {email}. Введите текущий пароль.",
+        "data": {
+          "password": "Пароль"
+        }
+      },
+      "reconfigure": {
+        "title": "Изменить пароль",
+        "description": "Введите текущий пароль ConnectMySoftener для {email}.",
+        "data": {
+          "password": "Пароль"
+        }
       }
     },
     "error": {
@@ -16,7 +30,9 @@
       "unknown": "Непредвиденная ошибка."
     },
     "abort": {
-      "already_configured": "Эта учётная запись уже настроена."
+      "already_configured": "Эта учётная запись уже настроена.",
+      "reauth_successful": "Вход выполнен повторно. Интеграция перезагружена.",
+      "reconfigure_successful": "Пароль обновлён. Интеграция перезагружена."
     }
   },
   "options": {
@@ -121,6 +137,23 @@
       },
       "holiday_mode": {
         "name": "Режим отпуска"
+      },
+      "recharge_interval": {
+        "name": "Интервал регенерации"
+      },
+      "recharge_interval_oxy": {
+        "name": "Интервал регенерации (oxy)"
+      }
+    },
+    "switch": {
+      "daily_recharge": {
+        "name": "Ежедневная регенерация"
+      },
+      "salt_alarm_notification": {
+        "name": "Уведомление о соли"
+      },
+      "maintenance_notification": {
+        "name": "Уведомление об обслуживании"
       }
     },
     "time": {

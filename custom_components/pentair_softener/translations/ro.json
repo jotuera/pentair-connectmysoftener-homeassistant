@@ -8,6 +8,20 @@
           "email": "E-mail",
           "password": "Parolă"
         }
+      },
+      "reauth_confirm": {
+        "title": "Autentificare din nou",
+        "description": "Cloudul ConnectMySoftener a respins parola salvată pentru {email}. Introduceți parola actuală.",
+        "data": {
+          "password": "Parolă"
+        }
+      },
+      "reconfigure": {
+        "title": "Schimbă parola",
+        "description": "Introduceți parola actuală ConnectMySoftener pentru {email}.",
+        "data": {
+          "password": "Parolă"
+        }
       }
     },
     "error": {
@@ -16,7 +30,9 @@
       "unknown": "Eroare neașteptată."
     },
     "abort": {
-      "already_configured": "Acest cont este deja configurat."
+      "already_configured": "Acest cont este deja configurat.",
+      "reauth_successful": "Autentificat din nou. Integrarea a fost reîncărcată.",
+      "reconfigure_successful": "Parola a fost actualizată. Integrarea a fost reîncărcată."
     }
   },
   "options": {
@@ -121,6 +137,23 @@
       },
       "holiday_mode": {
         "name": "Mod vacanță"
+      },
+      "recharge_interval": {
+        "name": "Interval de regenerare"
+      },
+      "recharge_interval_oxy": {
+        "name": "Interval de regenerare (oxy)"
+      }
+    },
+    "switch": {
+      "daily_recharge": {
+        "name": "Regenerare zilnică"
+      },
+      "salt_alarm_notification": {
+        "name": "Notificare alarmă sare"
+      },
+      "maintenance_notification": {
+        "name": "Notificare întreținere"
       }
     },
     "time": {

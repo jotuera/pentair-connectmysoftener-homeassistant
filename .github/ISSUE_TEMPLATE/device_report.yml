@@ -1,0 +1,58 @@
+name: Device report — works (or not) with my softener
+description: Help grow the list of supported devices
+title: "Device report: "
+labels: ["device report"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Every report helps other users decide whether the integration will work for them.
+        Never paste your password, e-mail or serial number here.
+  - type: input
+    id: model
+    attributes:
+      label: Softener model
+      description: As printed on the appliance.
+      placeholder: Softena 20
+    validations:
+      required: true
+  - type: input
+    id: brand
+    attributes:
+      label: Brand / seller
+      description: e.g. Pentair, Erie, Van Marcke, a local distributor.
+  - type: dropdown
+    id: result
+    attributes:
+      label: Does it work?
+      options:
+        - "Yes — everything works"
+        - "Partly — some entities are missing or wrong"
+        - "No — the integration cannot be set up"
+    validations:
+      required: true
+  - type: dropdown
+    id: serial_format
+    attributes:
+      label: Serial number format
+      options:
+        - "S-######## (starts with S)"
+        - "#####-###### (letter + digits, with a dash)"
+        - "I don't know"
+  - type: input
+    id: version
+    attributes:
+      label: Integration version
+      placeholder: v0.13.0
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Which entities are missing or show wrong values? Anything else worth knowing?
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Diagnostics (optional, very helpful)
+      description: |
+        Settings → Devices & services → Pentair ConnectMySoftener → ⋮ → **Download diagnostics**.
+        Personal data is removed automatically.
