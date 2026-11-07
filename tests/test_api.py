@@ -23,6 +23,9 @@ AUTH_HEADERS = {
 }
 
 
+JSON = {"Content-Type": "application/json"}
+
+
 def _api(hass) -> PentairApi:
     return PentairApi(async_get_clientsession(hass), "user@example.com", "secret")
 
@@ -46,6 +49,7 @@ async def test_devices_use_nested_profile_id(hass, aioclient_mock):
     aioclient_mock.get(
         f"{API_BASE_URL}/water_softeners",
         json=[{"id": 1, "profile": {"id": 42, "name": "A"}}, {"id": 2}],
+        headers=JSON,
     )
     profiles = await _api(hass).get_devices()
     assert [p["id"] for p in profiles] == [42]
@@ -53,7 +57,7 @@ async def test_devices_use_nested_profile_id(hass, aioclient_mock):
 
 async def test_no_devices_raises(hass, aioclient_mock):
     aioclient_mock.post(f"{API_BASE_URL}/auth/sign_in", headers=AUTH_HEADERS)
-    aioclient_mock.get(f"{API_BASE_URL}/water_softeners", json=[])
+    aioclient_mock.get(f"{API_BASE_URL}/water_softeners", json=[], headers=JSON)
     with pytest.raises(PentairApiError):
         await _api(hass).get_devices()
 
@@ -63,9 +67,22 @@ async def test_features_payload(hass, aioclient_mock):
     aioclient_mock.get(
         f"{API_BASE_URL}/water_softeners/42/features",
         json={"feature": {"recharge_daily": "available"}},
+        headers=JSON,
     )
     device = PentairDevice(_api(hass), {"id": 42})
     assert await device.get_features() == {"recharge_daily": "available"}
+
+
+async def test_expired_token_relogs_once(hass, aioclient_mock):
+    aioclient_mock.post(f"{API_BASE_URL}/auth/sign_in", headers=AUTH_HEADERS)
+    aioclient_mock.get(f"{API_BASE_URL}/water_softeners/42/flow", status=401)
+    device = PentairDevice(_api(hass), {"id": 42})
+    with pytest.raises(PentairAuthError):
+        await device.get_flow()
+    calls = [str(c[1]) for c in aioclient_mock.mock_calls]
+    # first login, 401, one re-login, 401 again -> give up
+    assert sum("sign_in" in c for c in calls) == 2
+    assert sum("flow" in c for c in calls) == 2
 
 
 async def test_override_key_is_validated(hass):

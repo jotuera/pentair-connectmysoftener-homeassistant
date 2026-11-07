@@ -6,13 +6,13 @@
 
 <p align="center">
   <a href="https://github.com/hacs/integration"><img src="https://img.shields.io/badge/HACS-Custom-41BDF5.svg" alt="HACS Custom"></a>
-  <img src="https://img.shields.io/badge/version-0.12.0-blue.svg" alt="Wersja">
-  <img src="https://img.shields.io/badge/HA-2023.1%2B-41BDF5.svg" alt="Home Assistant">
+  <img src="https://img.shields.io/badge/version-0.13.0-blue.svg" alt="Wersja">
+  <img src="https://img.shields.io/badge/HA-2024.4%2B-41BDF5.svg" alt="Home Assistant">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="Licencja: MIT"></a>
   <a href="https://buymeacoffee.com/jotuera"><img src="https://img.shields.io/badge/Buy%20me%20a%20coffee-jotuera-FFDD00?logo=buymeacoffee&logoColor=black" alt="Buy Me a Coffee"></a>
 </p>
 
-<p align="center"><a href="README.md">English</a> · <strong>Polski</strong></p>
+<p align="center"><a href="https://github.com/jotuera/pentair-connectmysoftener-homeassistant/blob/main/README.md">English</a> · <strong>Polski</strong></p>
 
 Integracja Home Assistant dla zmiękczaczy wody **Pentair ConnectMySoftener**
 (dawniej **Erie** — ten sam backend chmurowy `erieapp`, marka przejęta przez Pentair).
@@ -34,7 +34,11 @@ jak aplikacja mobilna — udostępnia sensory do monitorowania oraz encje do ste
 - 🏖️ Włączanie/wyłączanie trybu urlopowego na określoną liczbę dni
 - 🌍 Zlokalizowane nazwy encji w **10 językach** (patrz niżej)
 - 🧩 Gotowa **karta na dashboard**, serwowana przez integrację (patrz niżej)
-- ☁️ `cloud_polling` co 90 s, jednostki (l / gal) dobierane automatycznie z konta
+- 🏠 **Kilka zmiękczaczy** na jednym koncie — każdy jako osobne urządzenie
+- 🔑 Prosi o nowe hasło, gdy zmienisz je w aplikacji (bez ponownego dodawania integracji)
+- 🩺 **Diagnostyka** do pobrania, bez danych osobowych
+- ☁️ `cloud_polling`, oszczędnie dla chmury: dane na żywo co 90 s, rzadko zmieniające się
+  co 10 min (i od razu po każdej akcji), jednostki (l / gal) dobierane automatycznie z konta
 
 ## Obsługiwane urządzenia
 
@@ -108,6 +112,14 @@ z informacją, czy działa — dopiszę go do listy.
 | Tryb urlopowy | `number` (0–40 dni) | `0` = wyłączony, `N` = włączony na N dni |
 | Twardość wody | `number` (1–99) | Twardość na wejściu, w jednostce ustawionej na urządzeniu (np. °d) |
 | Czas systemowy | `time` | Zegar samego urządzenia — odczytaj, by wykryć rozjechanie, lub ustaw |
+| Codzienna regeneracja | `switch` ¹ | Regeneracja codziennie („Uzupełnij codziennie” w aplikacji) |
+| Interwał regeneracji | `number` ¹ (0–99 dni) | Wymuszona regeneracja co N dni („Interwał” w aplikacji) |
+| Interwał regeneracji (oxy) | `number` ¹ (0–99 dni) | Interwał funkcji oxy, w modelach, które ją mają |
+| Powiadomienie o braku soli | `switch` | Powiadomienie z aplikacji/e-mail przy niskim poziomie soli |
+| Powiadomienie o konserwacji | `switch` | Powiadomienie z aplikacji/e-mail o wymaganej konserwacji |
+
+¹ Tworzone tylko, gdy urządzenie obsługuje dane ustawienie — integracja czyta te same flagi
+funkcji, według których aplikacja pokazuje lub ukrywa pole.
 
 ### Zużycie wody (opcjonalne)
 
@@ -267,7 +279,17 @@ action:
 1. **Ustawienia → Urządzenia i usługi → Dodaj integrację → Pentair ConnectMySoftener**.
 2. Zaloguj się **tym samym adresem e-mail i hasłem, co w aplikacji ConnectMySoftener**.
 
-Integracja automatycznie wykrywa pierwszy zmiękczacz na koncie.
+Każdy zmiękczacz na koncie jest dodawany jako osobne urządzenie.
+
+**Zmieniłeś hasło w aplikacji?** Home Assistant pokaże *Wymagane ponowne uwierzytelnienie* —
+wpisz tam nowe hasło. Hasło możesz też zmienić w dowolnej chwili: **⋮ → Zmień konfigurację**.
+
+**Zgłaszasz problem?** Dołącz plik diagnostyczny: **⋮ → Pobierz diagnostykę**
+(e-mail, hasło, numer seryjny i adres są usuwane automatycznie).
+
+**Zapytania do chmury:** dane na żywo (status, przepływ) co 90 s; informacje, ustawienia,
+historia i oczekujące zmiany co 10 min oraz od razu po każdej akcji lub zmianie statusu;
+wykresy zużycia (opcjonalne) co 30 min.
 
 ## Obsługiwane języki
 

@@ -6,13 +6,13 @@
 
 <p align="center">
   <a href="https://github.com/hacs/integration"><img src="https://img.shields.io/badge/HACS-Custom-41BDF5.svg" alt="HACS Custom"></a>
-  <img src="https://img.shields.io/badge/version-0.12.0-blue.svg" alt="Version">
-  <img src="https://img.shields.io/badge/HA-2023.1%2B-41BDF5.svg" alt="Home Assistant">
+  <img src="https://img.shields.io/badge/version-0.13.0-blue.svg" alt="Version">
+  <img src="https://img.shields.io/badge/HA-2024.4%2B-41BDF5.svg" alt="Home Assistant">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License: MIT"></a>
   <a href="https://buymeacoffee.com/jotuera"><img src="https://img.shields.io/badge/Buy%20me%20a%20coffee-jotuera-FFDD00?logo=buymeacoffee&logoColor=black" alt="Buy Me a Coffee"></a>
 </p>
 
-<p align="center"><strong>English</strong> · <a href="README.pl.md">Polski</a></p>
+<p align="center"><strong>English</strong> · <a href="https://github.com/jotuera/pentair-connectmysoftener-homeassistant/blob/main/README.pl.md">Polski</a></p>
 
 Home Assistant integration for **Pentair ConnectMySoftener** water softeners
 (formerly **Erie** — same `erieapp` cloud backend, brand acquired by Pentair).
@@ -33,7 +33,11 @@ mobile app does, exposing sensors for monitoring and entities for controlling th
 - 🏖️ Enable/disable holiday mode for a number of days
 - 🌍 Localized entity names in **10 languages** (see below)
 - 🧩 A ready-made **dashboard card**, served by the integration (see below)
-- ☁️ `cloud_polling` every 90 s, units (L / gal) picked automatically from the account
+- 🏠 **Several softeners** on one account — each becomes its own device
+- 🔑 Asks for the new password when it changes in the app (no need to re-add the integration)
+- 🩺 Downloadable **diagnostics** with personal data removed
+- ☁️ `cloud_polling`, gentle on the cloud: live data every 90 s, slow-changing data every 10 min
+  (and right after every action), units (L / gal) picked automatically from the account
 
 ## Supported devices
 
@@ -107,6 +111,14 @@ to report whether it works, so it can be added to the list.
 | Holiday mode | `number` (0–40 days) | `0` = off, `N` = enabled for N days |
 | Water hardness | `number` (1–99) | Inlet hardness, in the unit configured on the appliance (e.g. °d) |
 | System time | `time` | The appliance's own clock — read it to spot drift, or set it |
+| Daily recharge | `switch` ¹ | Regenerate every day ("Recharge daily" in the app) |
+| Recharge interval | `number` ¹ (0–99 days) | Forced regeneration interval ("Interval" in the app) |
+| Oxy recharge interval | `number` ¹ (0–99 days) | Interval of the oxy function, on models that have it |
+| Salt alarm notification | `switch` | App/e-mail notification when salt is low |
+| Maintenance notification | `switch` | App/e-mail notification when maintenance is due |
+
+¹ Created only when the appliance supports the setting — the integration reads the same
+feature flags the app uses to show or hide it.
 
 ### Water usage (optional)
 
@@ -267,7 +279,17 @@ action:
 1. **Settings → Devices & Services → Add Integration → Pentair ConnectMySoftener**.
 2. Sign in with the **same e-mail and password you use in the ConnectMySoftener app**.
 
-The integration auto-discovers the first water softener on the account.
+Every water softener on the account is added as its own device.
+
+**Password changed in the app?** Home Assistant shows *Re-authentication required* — enter
+the new password there. You can also change it any time: **⋮ → Reconfigure**.
+
+**Reporting a problem?** Attach the diagnostics file: **⋮ → Download diagnostics**
+(e-mail, password, serial number and address are removed automatically).
+
+**Requests to the cloud:** live data (status, flow) every 90 s; info, settings, history and
+pending changes every 10 min and right after every action or status change; water-usage
+charts (optional) every 30 min.
 
 ## Supported languages
 
