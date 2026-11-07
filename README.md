@@ -12,6 +12,8 @@
   <a href="https://buymeacoffee.com/jotuera"><img src="https://img.shields.io/badge/Buy%20me%20a%20coffee-jotuera-FFDD00?logo=buymeacoffee&logoColor=black" alt="Buy Me a Coffee"></a>
 </p>
 
+<p align="center"><strong>English</strong> · <a href="README.pl.md">Polski</a></p>
+
 Home Assistant integration for **Pentair ConnectMySoftener** water softeners
 (formerly **Erie** — same `erieapp` cloud backend, brand acquired by Pentair).
 
