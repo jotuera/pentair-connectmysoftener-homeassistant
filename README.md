@@ -35,13 +35,41 @@ mobile app does, exposing sensors for monitoring and entities for controlling th
 - 🧩 A ready-made **dashboard card**, served by the integration (see below)
 - ☁️ `cloud_polling` every 90 s, units (L / gal) picked automatically from the account
 
-## Tested hardware
+## Supported devices
 
-Developed and tested on the **Supreme Soft 20W** water softener.
+The integration does not depend on the softener model: it talks to the same cloud API
+as the **ConnectMySoftener** app (formerly **Erie Connect**). **If your softener shows up
+and works in the ConnectMySoftener app, it should work here.** The app itself has no
+per-model logic. It only distinguishes two serial-number formats (`S-########` and
+`#####-######`), which correspond to two controller generations.
 
-It should also work with the **26W** and **32W** models, which share the same
-ConnectMySoftener platform and cloud API. If you run it on another model,
-please open an issue to report whether it works.
+### Tested
+
+| Model | Notes |
+|---|---|
+| **Supreme Soft 20W** | Developed and tested on this unit (Pentair / Erie, sold in Poland) |
+
+### Expected to work (same platform)
+
+| Model / brand | Wi‑Fi | Notes |
+|---|---|---|
+| **Supreme Soft** 11W / 15W / 26W / 32W | built-in (W) | Same series as the tested unit |
+| **Pentair IQ Soft** (IQ Soft 368 EiQ) | built-in | The original Erie Connect series; earlier Erie integrations targeted the **IQsoft 26** |
+| **Pentair Softena** (368 EiQ) | optional | Marked "Connected" by Pentair; controlled via ConnectMySoftener |
+| **Pentair SlimLine** (368 / 368 EiQ) | optional | Marked "Connected" by Pentair; controlled via ConnectMySoftener |
+| **Erie** connected softeners | — | Same `erieapp` cloud backend (brand acquired by Pentair) |
+| **Van Marcke** own-brand softeners | built-in since 2022 | Made by Pentair; same cloud API |
+
+### Not supported
+
+- **Pentair Connected Water Softener (US)** — Fleck 5800/5810/5812 XTRi valves; uses the
+  separate **Pentair Home** app and a different cloud.
+- Softeners without a Wi‑Fi module (e.g. Pentair **Evolio**, **Foleo**, **River Soft**) —
+  no connectivity is listed for them.
+
+Running it on another model? Please
+[open an issue](https://github.com/jotuera/pentair-connectmysoftener-homeassistant/issues)
+to report whether it works, so it can be added to the list.
 
 ## Entities
 

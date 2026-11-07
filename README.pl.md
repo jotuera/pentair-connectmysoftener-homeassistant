@@ -36,13 +36,41 @@ jak aplikacja mobilna — udostępnia sensory do monitorowania oraz encje do ste
 - 🧩 Gotowa **karta na dashboard**, serwowana przez integrację (patrz niżej)
 - ☁️ `cloud_polling` co 90 s, jednostki (l / gal) dobierane automatycznie z konta
 
-## Przetestowany sprzęt
+## Obsługiwane urządzenia
 
-Tworzone i testowane na zmiękczaczu **Supreme Soft 20W**.
+Integracja nie zależy od modelu zmiękczacza: korzysta z tego samego API chmurowego co
+aplikacja **ConnectMySoftener** (dawniej **Erie Connect**). **Jeśli Twój zmiękczacz jest
+widoczny i działa w aplikacji ConnectMySoftener, powinien działać także tutaj.** Sama
+aplikacja nie ma logiki zależnej od modelu — rozróżnia tylko dwa formaty numeru seryjnego
+(`S-########` i `#####-######`), odpowiadające dwóm generacjom sterowników.
 
-Powinno działać także z modelami **26W** i **32W**, które korzystają z tej samej platformy
-ConnectMySoftener i API chmurowego. Jeśli uruchomisz na innym modelu, otwórz zgłoszenie
-(issue) z informacją, czy działa.
+### Przetestowane
+
+| Model | Uwagi |
+|---|---|
+| **Supreme Soft 20W** | Na nim integracja powstała i jest testowana (Pentair / Erie, sprzedawany w Polsce) |
+
+### Powinny działać (ta sama platforma)
+
+| Model / marka | Wi‑Fi | Uwagi |
+|---|---|---|
+| **Supreme Soft** 11W / 15W / 26W / 32W | wbudowane (W) | Ta sama seria co testowany egzemplarz |
+| **Pentair IQ Soft** (IQ Soft 368 EiQ) | wbudowane | Pierwotna seria Erie Connect; wcześniejsze integracje Erie powstały dla **IQsoft 26** |
+| **Pentair Softena** (368 EiQ) | opcja | Oznaczony przez Pentair jako „Connected”, sterowany przez ConnectMySoftener |
+| **Pentair SlimLine** (368 / 368 EiQ) | opcja | Oznaczony przez Pentair jako „Connected”, sterowany przez ConnectMySoftener |
+| Zmiękczacze **Erie** z Wi‑Fi | — | Ten sam backend chmurowy `erieapp` (marka przejęta przez Pentair) |
+| Zmiękczacze marki **Van Marcke** | wbudowane od 2022 | Produkowane przez Pentair; to samo API chmurowe |
+
+### Nieobsługiwane
+
+- **Pentair Connected Water Softener (USA)** — zawory Fleck 5800/5810/5812 XTRi; używa
+  osobnej aplikacji **Pentair Home** i innej chmury.
+- Zmiękczacze bez modułu Wi‑Fi (np. Pentair **Evolio**, **Foleo**, **River Soft**) —
+  producent nie podaje dla nich łączności.
+
+Używasz integracji z innym modelem?
+[Otwórz zgłoszenie](https://github.com/jotuera/pentair-connectmysoftener-homeassistant/issues)
+z informacją, czy działa — dopiszę go do listy.
 
 ## Encje
 
