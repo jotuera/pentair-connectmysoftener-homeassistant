@@ -5,7 +5,7 @@
 <h1 align="center">Pentair ConnectMySoftener — Home Assistant</h1>
 
 <p align="center">
-  <a href="https://github.com/hacs/integration"><img src="https://img.shields.io/badge/HACS-Custom-41BDF5.svg" alt="HACS Custom"></a>
+  <a href="https://github.com/hacs/integration"><img src="https://img.shields.io/badge/HACS-Default-41BDF5.svg" alt="HACS Default"></a>
   <img src="https://img.shields.io/badge/version-0.13.0-blue.svg" alt="Version">
   <img src="https://img.shields.io/badge/HA-2024.4%2B-41BDF5.svg" alt="Home Assistant">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License: MIT"></a>
@@ -264,10 +264,16 @@ action:
 
 ### HACS (recommended)
 
-1. In HACS go to **Integrations → ⋮ → Custom repositories**.
-2. Add `https://github.com/jotuera/pentair-connectmysoftener-homeassistant` with category **Integration**.
-3. Install **Pentair ConnectMySoftener**.
-4. Restart Home Assistant.
+The integration is in the default HACS catalog — no custom repository needed.
+
+[![Open in HACS](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=jotuera&repository=pentair-connectmysoftener-homeassistant&category=integration)
+
+1. In HACS search for **Pentair ConnectMySoftener** (or use the button above).
+2. Click **Download**.
+3. Restart Home Assistant.
+
+> Added it earlier as a custom repository? Nothing to change — updates keep working.
+> You can remove the custom repository entry in HACS if you like.
 
 ### Manual
 

@@ -5,7 +5,7 @@
 <h1 align="center">Pentair ConnectMySoftener — Home Assistant</h1>
 
 <p align="center">
-  <a href="https://github.com/hacs/integration"><img src="https://img.shields.io/badge/HACS-Custom-41BDF5.svg" alt="HACS Custom"></a>
+  <a href="https://github.com/hacs/integration"><img src="https://img.shields.io/badge/HACS-Default-41BDF5.svg" alt="HACS Default"></a>
   <img src="https://img.shields.io/badge/version-0.13.0-blue.svg" alt="Wersja">
   <img src="https://img.shields.io/badge/HA-2024.4%2B-41BDF5.svg" alt="Home Assistant">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="Licencja: MIT"></a>
@@ -264,10 +264,16 @@ action:
 
 ### HACS (zalecane)
 
-1. W HACS wejdź w **Integracje → ⋮ → Niestandardowe repozytoria**.
-2. Dodaj `https://github.com/jotuera/pentair-connectmysoftener-homeassistant` z kategorią **Integration**.
-3. Zainstaluj **Pentair ConnectMySoftener**.
-4. Zrestartuj Home Assistant.
+Integracja jest w domyślnym katalogu HACS — nie trzeba dodawać niestandardowego repozytorium.
+
+[![Otwórz w HACS](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=jotuera&repository=pentair-connectmysoftener-homeassistant&category=integration)
+
+1. W HACS wyszukaj **Pentair ConnectMySoftener** (albo użyj przycisku powyżej).
+2. Kliknij **Pobierz**.
+3. Zrestartuj Home Assistant.
+
+> Dodałeś ją wcześniej jako niestandardowe repozytorium? Nic nie musisz zmieniać — aktualizacje
+> działają dalej. Wpis niestandardowego repozytorium możesz usunąć w HACS.
 
 ### Ręcznie
 
